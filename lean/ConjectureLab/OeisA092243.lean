@@ -49,7 +49,9 @@ theorem tugOfWarScore_append_step :
       omega
   | g :: g' :: rest, gPrev, gCurr => by
       have ih := tugOfWarScore_append_step (g' :: rest) gPrev gCurr
-      simp only [List.cons_append, tugOfWarScore] at ih ⊢
+      simp only [List.cons_append] at ih ⊢
+      simp only [tugOfWarScore]
+      rw [ih]
       omega
 
 /-- If the score reaches 0 and the next gap strictly increases, the next score is +1 > 0. -/
