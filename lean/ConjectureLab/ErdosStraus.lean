@@ -12,7 +12,7 @@ theorem erdos_straus_even (k : Nat) (hk : 0 < k) : HasErdosStraus (2 * k) := by
   have h1 : (2 * k) * (2 * k) = 4 * (k * k) := by
     calc (2 * k) * (2 * k) = 2 * (k * (2 * k)) := by rw [Nat.mul_assoc]
       _ = 2 * (2 * (k * k)) := by rw [Nat.mul_left_comm k 2 k]
-      _ = 4 * (k * k) := by rw [← Nat.mul_assoc]
+      _ = 4 * (k * k) := by omega
   have h2 : k * (2 * k) = 2 * (k * k) := by rw [Nat.mul_left_comm]
   have h3 : (2 * k) * (2 * k) + k * (2 * k) + k * (2 * k) = 8 * (k * k) := by
     rw [h1, h2]; omega
@@ -22,16 +22,15 @@ theorem erdos_straus_even (k : Nat) (hk : 0 < k) : HasErdosStraus (2 * k) := by
     _ = 4 * k * (4 * (k * k)) := by rw [h1]
     _ = 4 * (k * (4 * (k * k))) := by rw [Nat.mul_assoc]
     _ = 4 * (4 * (k * (k * k))) := by rw [Nat.mul_left_comm k 4 (k * k)]
-    _ = 16 * (k * (k * k)) := by rw [← Nat.mul_assoc]
-    _ = 2 * (8 * (k * (k * k))) := by rw [← Nat.mul_assoc]
+    _ = 2 * (8 * (k * (k * k))) := by omega
     _ = 2 * (k * (8 * (k * k))) := by rw [Nat.mul_left_comm 8 k (k * k)]
-    _ = (2 * k) * (8 * (k * k)) := by rw [← Nat.mul_assoc]
+    _ = (2 * k) * (8 * (k * k)) := by rw [Nat.mul_assoc]
 
 /-- Case 2: every `n = 4 * k + 3`. -/
 theorem erdos_straus_three_mod_four (k : Nat) : HasErdosStraus (4 * k + 3) := by
-  set m := k + 1
-  set n := 4 * k + 3
-  set y := 2 * m * n
+  let m := k + 1
+  let n := 4 * k + 3
+  let y := 2 * m * n
   have hm : 0 < m := by omega
   have hn : 0 < n := by omega
   have hy : 0 < y := Nat.mul_pos (Nat.mul_pos (by omega) hm) hn
@@ -39,17 +38,18 @@ theorem erdos_straus_three_mod_four (k : Nat) : HasErdosStraus (4 * k + 3) := by
   have hmn : n + 1 = 4 * m := by omega
   have hsum : y + m + m = 8 * (m * m) := by
     calc y + m + m = 2 * m * n + (m + m) := by rw [Nat.add_assoc]
-      _ = 2 * m * n + 2 * m * 1 := by rw [Nat.mul_one, Nat.two_mul]
+      _ = 2 * m * n + 2 * m * 1 := by omega
       _ = 2 * m * (n + 1) := by rw [← Nat.mul_add]
       _ = 2 * m * (4 * m) := by rw [hmn]
       _ = 2 * (m * (4 * m)) := by rw [Nat.mul_assoc]
       _ = 2 * (4 * (m * m)) := by rw [Nat.mul_left_comm m 4 m]
-      _ = 8 * (m * m) := by rw [← Nat.mul_assoc]
+      _ = 8 * (m * m) := by omega
   have hcore : 4 * m * y = n * (y + m + m) := by
     rw [hsum]
-    calc 4 * m * (2 * m * n) = 4 * (m * (2 * (m * n))) := by rw [Nat.mul_assoc, Nat.mul_assoc 2]
+    calc 4 * m * (2 * m * n) = 4 * (m * (2 * (m * n))) := by
+          rw [Nat.mul_assoc 4 m, Nat.mul_assoc 2 m n]
       _ = 4 * (2 * (m * (m * n))) := by rw [Nat.mul_left_comm m 2 (m * n)]
-      _ = 8 * (m * (m * n)) := by rw [← Nat.mul_assoc]
+      _ = 8 * (m * (m * n)) := by omega
       _ = 8 * (m * (n * m)) := by rw [Nat.mul_comm m n]
       _ = 8 * (n * (m * m)) := by rw [Nat.mul_left_comm m n m]
       _ = n * (8 * (m * m)) := by rw [Nat.mul_left_comm]
@@ -59,9 +59,9 @@ theorem erdos_straus_three_mod_four (k : Nat) : HasErdosStraus (4 * k + 3) := by
 
 /-- Case 3: every `n = 8 * k + 5`. -/
 theorem erdos_straus_five_mod_eight (k : Nat) : HasErdosStraus (8 * k + 5) := by
-  set m := k + 1
-  set n := 8 * k + 5
-  set z := m * n
+  let m := k + 1
+  let n := 8 * k + 5
+  let z := m * n
   have hm : 0 < m := by omega
   have hn : 0 < n := by omega
   have hz : 0 < z := Nat.mul_pos hm hn
@@ -70,28 +70,28 @@ theorem erdos_straus_five_mod_eight (k : Nat) : HasErdosStraus (8 * k + 5) := by
   have hsum : 2 * z + 2 * m + 4 * m = 16 * (m * m) := by
     calc 2 * z + 2 * m + 4 * m = 2 * (m * n) + (2 * m + 4 * m) := by rw [Nat.add_assoc]
       _ = 2 * m * n + 2 * m * 3 := by
-        rw [Nat.mul_assoc 2 m n]
-        have h3 : 2 * m + 4 * m = 2 * m * 3 := by omega
-        rw [h3]
+        rw [← Nat.mul_assoc 2 m n]
+        omega
       _ = 2 * m * (n + 3) := by rw [← Nat.mul_add]
       _ = 2 * m * (8 * m) := by rw [hmn]
       _ = 2 * (m * (8 * m)) := by rw [Nat.mul_assoc]
       _ = 2 * (8 * (m * m)) := by rw [Nat.mul_left_comm m 8 m]
-      _ = 16 * (m * m) := by rw [← Nat.mul_assoc]
+      _ = 16 * (m * m) := by omega
   have hcore : 4 * (2 * m) * (2 * z) = n * (2 * z + 2 * m + 4 * m) := by
     rw [hsum]
     calc 4 * (2 * m) * (2 * z)
-        = (4 * 2) * m * (2 * z) := by rw [Nat.mul_assoc 4 2 m]
+        = (4 * 2) * m * (2 * z) := by rw [← Nat.mul_assoc 4 2 m]
       _ = 8 * (m * (2 * z)) := by rw [Nat.mul_assoc]
       _ = 8 * (2 * (m * z)) := by rw [Nat.mul_left_comm m 2 z]
-      _ = 16 * (m * (m * n)) := by rw [← Nat.mul_assoc]
+      _ = 16 * (m * (m * n)) := by omega
       _ = 16 * (m * (n * m)) := by rw [Nat.mul_comm m n]
       _ = 16 * (n * (m * m)) := by rw [Nat.mul_left_comm m n m]
       _ = n * (16 * (m * m)) := by rw [Nat.mul_left_comm]
   have h2mz : 2 * m * (2 * z) = 4 * m * z := by
     calc 2 * m * (2 * z) = 2 * (m * (2 * z)) := by rw [Nat.mul_assoc]
       _ = 2 * (2 * (m * z)) := by rw [Nat.mul_left_comm m 2 z]
-      _ = 4 * m * z := by rw [← Nat.mul_assoc, ← Nat.mul_assoc]
+      _ = 4 * (m * z) := by omega
+      _ = 4 * m * z := by rw [← Nat.mul_assoc]
   calc 4 * (2 * m) * (2 * z) * z
       = (n * (2 * z + 2 * m + 4 * m)) * z := by rw [hcore]
     _ = n * ((2 * z + 2 * m + 4 * m) * z) := by rw [Nat.mul_assoc]
