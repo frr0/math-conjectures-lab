@@ -1,6 +1,7 @@
 import ConjectureLab.EulerFifthPowers
 import ConjectureLab.ErdosStraus
 import ConjectureLab.BrocardProblem
+import ConjectureLab.OeisA100475
 
 -- Root module for formally verified conjectures in math-conjectures-lab.
 -- Import verified theorem modules here so `lake build` checks them automatically.
