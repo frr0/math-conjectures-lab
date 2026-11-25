@@ -10,6 +10,7 @@ Personal research lab for automated & AI-assisted mathematical conjecture explor
 | 2 | Erdős–Straus conjecture (1948) | Partial ($n \not\equiv 1 \pmod 8$ proved; $n \le 10^5$ checked) | 🟡 | [erdos-straus](results/erdos-straus/) |
 | 3 | Brocard's problem (1876) | Partial (last-digit obstruction proved; $n \le 10^3$ checked) | 🟡 | [brocard-problem](results/brocard-problem/) |
 | 4 | OEIS A100475 (loop question) | Disproved (no positive start ever loops) | 🟢 | [oeis-a100475](results/oeis-a100475/) |
+| 5 | OEIS A189409 (`conjecture_1`: $(p_n\#)^2+1$ squarefree) | Disproved ($29^2 \mid a(9)$) | ✅ | [oeis-a189409](results/oeis-a189409/) |
 
 ### Verification Legend
 - ✅ **Lean-verified**: Complete Lean 4 proof checked with zero `sorry` and only standard axioms (`propext`, `Classical.choice`, `Quot.sound`).
