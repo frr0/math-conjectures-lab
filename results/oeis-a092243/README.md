@@ -3,7 +3,7 @@
 ## Conjecture Statement
 Let $p_0 = 2, p_1 = 3, p_2 = 5, \dots$ be the 0-indexed sequence of prime numbers, and let $g_k = p_k - p_{k-1}$ be the $k$-th prime gap ($k \ge 1$). Define the "tug-of-war" score between prime-gap increases and decreases:
 
-$$a(n) = \sum_{k=2}^{n} \operatorname{sign}(g_k - g_{k-1}) \quad (n \ge 2), \qquad a(0) = a(1) = 0.$$
+$$a(n) = \sum_{k=2}^{n} \mathrm{sign}(g_k - g_{k-1}) \quad (n \ge 2), \qquad a(0) = a(1) = 0.$$
 
 In `google-deepmind/formal-conjectures` (`FormalConjectures/OEIS/92243.lean`), `conjecture1` asks:
 
@@ -15,7 +15,7 @@ In `google-deepmind/formal-conjectures` (`FormalConjectures/OEIS/92243.lean`), `
 The **smallest** index $n > 250{,}000$ with $a(n) > 0$ is **$n = 261{,}150$**:
 - $p_{261148} = 3{,}666{,}529$, $p_{261149} = 3{,}666{,}539$, $p_{261150} = 3{,}666{,}581$.
 - $g_{261149} = 10$, $g_{261150} = 42 > 10$.
-- $a(261{,}149) = 0$, and therefore $a(261{,}150) = 0 + \operatorname{sign}(42 - 10) = 1 > 0$.
+- $a(261{,}149) = 0$, and therefore $a(261{,}150) = 0 + \mathrm{sign}(42 - 10) = 1 > 0$.
 
 Further computation up to $p_{283145} = 3{,}999{,}971$ shows $14{,}902$ indices $n \in (250{,}000, 283{,}145]$ with $a(n) > 0$, reaching a maximum score of $a(273{,}677) = 83$.
 

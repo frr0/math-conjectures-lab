@@ -3,9 +3,9 @@
 ## Conjecture Statement
 For a positive integer $n$, the **perfect deficiency** of $n$ (OEIS A109883) is the remainder obtained by starting with $n$ and greedily subtracting each divisor $d \mid n$ in increasing order $1, \dots, n$, skipping any divisor larger than the current remainder:
 
-$$\operatorname{perfectDeficiency}(n) = \operatorname{foldl}\!\left(\lambda m\, d \Rightarrow \text{if } d \mid n \land d \le m \text{ then } m - d \text{ else } m,\; n,\; [0, 1, \dots, n]\right).$$
+$$\mathrm{perfectDeficiency}(n) = \mathrm{foldl}\!\left(\lambda m\, d \Rightarrow \text{if } d \mid n \land d \le m \text{ then } m - d \text{ else } m,\; n,\; [0, 1, \dots, n]\right).$$
 
-OEIS A108864 consists of all positive integers $n$ with $\operatorname{perfectDeficiency}(n) \le 10$. In `google-deepmind/formal-conjectures` (`FormalConjectures/OEIS/108864.lean`), the open question asks:
+OEIS A108864 consists of all positive integers $n$ with $\mathrm{perfectDeficiency}(n) \le 10$. In `google-deepmind/formal-conjectures` (`FormalConjectures/OEIS/108864.lean`), the open question asks:
 
 > **Question (`OeisA108864.conjecture`):** Is $1155$ the last odd number in this sequence? (Equivalently, is every term $a(n)$ with $n > 58$ even?)
 
@@ -20,13 +20,13 @@ satisfies:
 - $\sigma(m) = 4 \cdot 6 \cdot 8 \cdot 12 \cdot 548 \cdot 1292 = 1{,}631{,}268{,}864$;
 - the sum of all proper divisors of $m$ is $\sigma(m) - m = 815{,}634{,}429 = m - 6 < m$;
 - therefore, every proper divisor $d < m$ is subtracted during the greedy fold and $d = m$ is skipped (since $m > 6$), yielding:
-$$\operatorname{perfectDeficiency}(815{,}634{,}435) = 6 \le 10.$$
+$$\mathrm{perfectDeficiency}(815{,}634{,}435) = 6 \le 10.$$
 
 Hence $815{,}634{,}435$ is an odd member of OEIS A108864 strictly greater than $1155$, refuting the conjecture that $1155$ is the last odd term.
 
 ## Literature Check
 - Source: [OEIS A108864](https://oeis.org/A108864) and `google-deepmind/formal-conjectures` (`FormalConjectures/OEIS/108864.lean`), where the question is currently marked `research open, question`.
-- The counterexample $815{,}634{,}435$ also appears in the related deficiency-6 sequences [OEIS A087485](https://oeis.org/A087485) and [OEIS A141548](https://oeis.org/A141548), since any odd deficient number with $2m - \sigma(m) = 6$ automatically has $\operatorname{perfectDeficiency}(m) = 6 \le 10$.
+- The counterexample $815{,}634{,}435$ also appears in the related deficiency-6 sequences [OEIS A087485](https://oeis.org/A087485) and [OEIS A141548](https://oeis.org/A141548), since any odd deficient number with $2m - \sigma(m) = 6$ automatically has $\mathrm{perfectDeficiency}(m) = 6 \le 10$.
 
 ## Verification
 - **Lean 4 ([OeisA108864.lean](../../lean/ConjectureLab/OeisA108864.lean)):** Complete, self-contained pure Lean 4 proof (zero Mathlib, zero `sorry`, zero custom axioms) proving:

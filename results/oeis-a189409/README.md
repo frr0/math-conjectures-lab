@@ -1,4 +1,4 @@
-# OEIS A189409 (`conjecture_1`) — Counterexample: $(p_9\#)^2 + 1$ Is Not Squarefree
+# OEIS A189409 (`conjecture_1`) — Counterexample: $(\mathrm{primorial}(9))^2 + 1$ Is Not Squarefree
 
 - **Source:** J. M. Campbell (2011), [OEIS A189409](https://oeis.org/A189409); formalized as an open question in Google DeepMind's `formal-conjectures` (`FormalConjectures/OEIS/189409.lean`, `conjecture_1`).
 - **Status:** Disproved (Complete resolution via explicit counterexample at $n = 9$).
@@ -6,7 +6,7 @@
 
 ## Exact Statement
 
-Let $p_n\# = \prod_{k=1}^{n} p_k$ be the $n$-th primorial, and define $a(n) = (p_n\#)^2 + 1$.
+Let $\mathrm{primorial}(n) = \prod_{k=1}^{n} p_k$ be the $n$-th primorial, and define $a(n) = (\mathrm{primorial}(n))^2 + 1$.
 
 **Question (`conjecture_1`):** Is $a(n)$ squarefree for every $n \ge 0$?
 
@@ -14,9 +14,9 @@ Let $p_n\# = \prod_{k=1}^{n} p_k$ be the $n$-th primorial, and define $a(n) = (p
 
 ## Counterexample ($n = 9$)
 
-$$p_9\# = 2 \cdot 3 \cdot 5 \cdot 7 \cdot 11 \cdot 13 \cdot 17 \cdot 19 \cdot 23 = 223{,}092{,}870$$
+$$\mathrm{primorial}(9) = 2 \cdot 3 \cdot 5 \cdot 7 \cdot 11 \cdot 13 \cdot 17 \cdot 19 \cdot 23 = 223{,}092{,}870$$
 
-$$a(9) = (p_9\#)^2 + 1 = 49{,}770{,}428{,}644{,}836{,}901 = 29^2 \times 59{,}180{,}057{,}841{,}661$$
+$$a(9) = (\mathrm{primorial}(9))^2 + 1 = 49{,}770{,}428{,}644{,}836{,}901 = 29^2 \times 59{,}180{,}057{,}841{,}661$$
 
 Since $29^2 = 841$ divides $a(9)$, $a(9)$ is **not** squarefree.
 
