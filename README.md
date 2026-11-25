@@ -11,6 +11,7 @@ Personal research lab for automated & AI-assisted mathematical conjecture explor
 | 3 | Brocard's problem (1876) | Partial (last-digit obstruction proved; $n \le 10^3$ checked) | 🟡 | [brocard-problem](results/brocard-problem/) |
 | 4 | OEIS A100475 (loop question) | Disproved (no positive start ever loops) | 🟢 | [oeis-a100475](results/oeis-a100475/) |
 | 5 | OEIS A189409 (`conjecture_1`: $(p_n\#)^2+1$ squarefree) | Disproved ($29^2 \mid a(9)$) | ✅ | [oeis-a189409](results/oeis-a189409/) |
+| 6 | OEIS A092243 (`conjecture1`: prime-gap tug-of-war $> 0$ for $n > 250{,}000$) | Proved ($a(261{,}150) = 1 > 0$) | 🟢 | [oeis-a092243](results/oeis-a092243/) |
 
 ### Verification Legend
 - ✅ **Lean-verified**: Complete Lean 4 proof checked with zero `sorry` and only standard axioms (`propext`, `Classical.choice`, `Quot.sound`).
