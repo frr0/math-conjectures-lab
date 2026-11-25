@@ -1,3 +1,5 @@
+import ConjectureLab.EulerFifthPowers
+
 -- Root module for formally verified conjectures in math-conjectures-lab.
 -- Import verified theorem modules here so `lake build` checks them automatically.
 
