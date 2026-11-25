@@ -1,0 +1,21 @@
+# OpenTofu / Terraform
+infra/.terraform/
+infra/terraform.tfstate
+infra/terraform.tfstate.*
+infra/terraform.tfvars
+infra/*.tfplan
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Lean 4
+lean/.lake/
+
+# OS / Editor
+.DS_Store
+*.swp
+.env

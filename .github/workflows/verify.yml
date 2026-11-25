@@ -1,0 +1,43 @@
+name: Verify Conjectures
+
+on:
+  push:
+    branches: [main, research]
+  pull_request:
+    branches: [main, research]
+
+jobs:
+  python-checks:
+    name: python-checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run repository and Python verifiers
+        run: python3 scripts/check_repo.py
+
+  lean-checks:
+    name: lean-checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install elan (Lean 4)
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+      - name: Cache Lean build artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            lean/.lake
+            ~/.elan
+          key: lean-${{ hashFiles('lean/lean-toolchain', 'lean/lakefile.toml', 'lean/lake-manifest.json') }}
+
+      - name: Build Lean 4 and audit axioms
+        run: bash scripts/verify_lean.sh
