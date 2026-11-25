@@ -8,6 +8,7 @@ Personal research lab for automated & AI-assisted mathematical conjecture explor
 | :--- | :--- | :--- | :---: | :--- |
 | 1 | Euler's sum of powers ($k=5$, calibration) | Disproved (1966 counterexample) | ✅ | [euler-fifth-powers](results/euler-fifth-powers/) |
 | 2 | Erdős–Straus conjecture (1948) | Partial ($n \not\equiv 1 \pmod 8$ proved; $n \le 10^5$ checked) | 🟡 | [erdos-straus](results/erdos-straus/) |
+| 3 | Brocard's problem (1876) | Partial (last-digit obstruction proved; $n \le 10^3$ checked) | 🟡 | [brocard-problem](results/brocard-problem/) |
 
 ### Verification Legend
 - ✅ **Lean-verified**: Complete Lean 4 proof checked with zero `sorry` and only standard axioms (`propext`, `Classical.choice`, `Quot.sound`).
