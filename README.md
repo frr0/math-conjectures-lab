@@ -6,7 +6,7 @@ Personal research lab for automated & AI-assisted mathematical conjecture explor
 
 | # | Conjecture | Outcome | Verification | Directory |
 | :--- | :--- | :--- | :---: | :--- |
-| — | *No published results yet* | — | — | — |
+| 1 | Euler's sum of powers ($k=5$, calibration) | Disproved (1966 counterexample) | ✅ | [euler-fifth-powers](results/euler-fifth-powers/) |
 
 ### Verification Legend
 - ✅ **Lean-verified**: Complete Lean 4 proof checked with zero `sorry` and only standard axioms (`propext`, `Classical.choice`, `Quot.sound`).
