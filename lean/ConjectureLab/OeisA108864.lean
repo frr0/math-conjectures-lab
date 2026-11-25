@@ -152,7 +152,7 @@ theorem dvd_gcd_mul_right {a b : Nat} :
         have ⟨c1, hc1⟩ := hy
         have ⟨c2, hc2⟩ := hdiv2
         refine ⟨c1 - c2, ?_⟩
-        rw [Nat.mul_sub]
+        rw [Nat.mul_sub_left_distrib]
         omega
       exact dvd_gcd_mul_right (y % (x + 1)) (x + 1) hdiv1 hx
 termination_by x => x
