@@ -39,11 +39,15 @@ def noDupB : List Nat → Bool
 theorem not_mem_of_elem_false {a : Nat} : ∀ {l : List Nat}, l.elem a = false → a ∉ l
   | [], _ => fun h => nomatch h
   | x :: xs, h => by
-      simp only [List.elem_cons, Bool.or_eq_false_iff, beq_eq_false_iff_ne] at h
       intro hmem
       cases hmem with
-      | head => exact h.1 rfl
-      | tail _ htail => exact not_mem_of_elem_false h.2 htail
+      | head => simp [List.elem] at h
+      | tail _ htail =>
+        by_cases hax : a = x
+        · subst hax; simp [List.elem] at h
+        · have hbeq : (a == x) = false := beq_eq_false_iff_ne.mpr hax
+          simp only [List.elem, hbeq] at h
+          exact not_mem_of_elem_false h htail
 
 theorem noDup_of_noDupB : ∀ {l : List Nat}, noDupB l = true → NoDup l
   | [], _ => trivial
@@ -118,10 +122,38 @@ theorem isPrime_of_noDivisor {p fuel : Nat}
       rw [hq]
       exact Nat.mul_le_mul_left d hle
     exact False.elim (noDivisorRange_sound fuel 2 hbound hcheck d hd2 hdd hdvd)
-  · have hqq : q * q ≤ p := by
+  · have hqd : q ≤ d := by omega
+    have hqq : q * q ≤ p := by
       rw [hq, Nat.mul_comm]
-      exact Nat.mul_le_mul_left q (by omega)
+      exact Nat.mul_le_mul_left q hqd
     exact False.elim (noDivisorRange_sound fuel 2 hbound hcheck q hq2 hqq hq_dvd)
+
+/-- Self-contained Euclidean divisibility lemma: if `a ∣ x * b` and `a ∣ y * b`,
+    then `a ∣ Nat.gcd x y * b`. -/
+theorem dvd_gcd_mul_right {a b : Nat} :
+    ∀ (x y : Nat), a ∣ x * b → a ∣ y * b → a ∣ Nat.gcd x y * b
+  | 0, y, _, hy => by
+      rw [Nat.gcd_zero_left]
+      exact hy
+  | x + 1, y, hx, hy => by
+      rw [Nat.gcd_rec]
+      have hlt : y % (x + 1) < x + 1 := Nat.mod_lt y (Nat.zero_lt_succ x)
+      have hdecomp : (y % (x + 1)) * b + (x + 1) * b * (y / (x + 1)) = y * b := by
+        have h1 : (x + 1) * (y / (x + 1)) + y % (x + 1) = y := Nat.div_add_mod y (x + 1)
+        have h2 : ((x + 1) * (y / (x + 1)) + y % (x + 1)) * b = y * b := congrArg (· * b) h1
+        rw [Nat.add_mul] at h2
+        rw [Nat.add_comm] at h2
+        have h3 : (x + 1) * (y / (x + 1)) * b = (x + 1) * b * (y / (x + 1)) := by
+          rw [Nat.mul_assoc, Nat.mul_comm (y / (x + 1)) b, ← Nat.mul_assoc]
+        rw [h3] at h2
+        exact h2
+      have hdiv2 : a ∣ (x + 1) * b * (y / (x + 1)) := Nat.dvd_trans hx (Nat.dvd_mul_right _ _)
+      have hdiv1 : a ∣ (y % (x + 1)) * b := by
+        have hsum : a ∣ (y % (x + 1)) * b + (x + 1) * b * (y / (x + 1)) := by
+          rw [hdecomp]; exact hy
+        exact (Nat.dvd_add_left hdiv2).mp hsum
+      exact dvd_gcd_mul_right (y % (x + 1)) (x + 1) hdiv1 hx
+termination_by x => x
 
 /-- Euclid's lemma: any divisor of `p * b` (with `p` prime) either is `p * a'` with `a' ∣ b`, or divides `b`. -/
 theorem dvd_mul_of_prime {p a b : Nat} (hp : IsPrime p) (h : a ∣ p * b) :
@@ -130,7 +162,9 @@ theorem dvd_mul_of_prime {p a b : Nat} (hp : IsPrime p) (h : a ∣ p * b) :
   have hga : Nat.gcd a p ∣ a := Nat.gcd_dvd_left a p
   cases hp.2 (Nat.gcd a p) hgp with
   | inl h1 =>
-    exact Or.inr (Nat.Coprime.dvd_of_dvd_mul_left h1 h)
+    have hdvd := dvd_gcd_mul_right a p (Nat.dvd_mul_right a b) h
+    rw [h1, Nat.one_mul] at hdvd
+    exact Or.inr hdvd
   | inr heq =>
     rw [heq] at hga
     have ⟨a', ha'⟩ := hga
@@ -197,7 +231,7 @@ theorem listSum_filter_le (p : Nat → Bool) :
   | a :: as => by
       have ih := listSum_filter_le p as
       simp only [List.filter_cons, listSum]
-      cases p a <;> simp only [listSum] <;> omega
+      cases p a <;> simp [listSum] <;> omega
 
 theorem listSum_filter_lt_succ_of_not_mem (k : Nat) :
     ∀ {l : List Nat}, k ∉ l →
@@ -215,7 +249,7 @@ theorem listSum_filter_lt_succ_of_not_mem (k : Nat) :
         · have h' : ¬ (a < k + 1) := by omega
           simp [h, h']
       simp only [List.filter_cons, hdec]
-      cases decide (a < k) <;> simp only [listSum] <;> omega
+      cases decide (a < k) <;> simp [listSum, ih]
 
 theorem listSum_filter_lt_succ_of_mem (k : Nat) :
     ∀ {l : List Nat}, NoDup l → k ∈ l →
@@ -225,10 +259,11 @@ theorem listSum_filter_lt_succ_of_mem (k : Nat) :
   | a :: as, ⟨hnot, hnd⟩, hmem => by
       cases hmem with
       | head =>
-        have h1 : decide (a < a + 1) = true := by simp
-        have h2 : decide (a < a) = false := by simp
-        have ih := listSum_filter_lt_succ_of_not_mem a hnot
-        simp only [List.filter_cons, h1, h2, listSum]
+        have h1 : decide (k < k + 1) = true := by simp
+        have h2 : decide (k < k) = false := by simp
+        have ih := listSum_filter_lt_succ_of_not_mem k hnot
+        simp only [List.filter_cons, h1, h2]
+        simp [listSum, ih]
         omega
       | tail _ htail =>
         have hne : a ≠ k := fun h => hnot (h ▸ htail)
@@ -240,7 +275,7 @@ theorem listSum_filter_lt_succ_of_mem (k : Nat) :
           · have h' : ¬ (a < k + 1) := by omega
             simp [h, h']
         simp only [List.filter_cons, hdec]
-        cases decide (a < k) <;> simp only [listSum] <;> omega
+        cases decide (a < k) <;> simp [listSum, ih] <;> omega
 
 theorem filter_eq_self_of_forall {p : Nat → Bool} :
     ∀ {l : List Nat}, (∀ x ∈ l, p x = true) → l.filter p = l
@@ -248,7 +283,7 @@ theorem filter_eq_self_of_forall {p : Nat → Bool} :
   | a :: as, h => by
       have ha : p a = true := h a (List.mem_cons_self a as)
       have has : ∀ x ∈ as, p x = true := fun x hx => h x (List.mem_cons_of_mem a hx)
-      simp only [List.filter_cons, ha, filter_eq_self_of_forall has]
+      simp [List.filter_cons, ha, filter_eq_self_of_forall has]
 
 /-- Invariant for `foldl (pdStep n) n (List.range k)` when `divs` is the exact duplicate-free
     list of proper divisors of a deficient number `n`. -/
@@ -266,8 +301,9 @@ theorem foldl_range_eq_sub_filter_sum (n : Nat) (divs : List Nat)
         | nil => rfl
         | cons x xs ih =>
           have : decide (x < 0) = false := by simp
-          simp only [List.filter_cons, this, ih]
-      simp [hzero]
+          simp [List.filter_cons, this, ih]
+      rw [hzero divs]
+      simp [List.range]
   | k + 1, hk => by
       have ih := foldl_range_eq_sub_filter_sum n divs hnd hmem hsum k (by omega)
       rw [List.range_succ, List.foldl_append, ih]
