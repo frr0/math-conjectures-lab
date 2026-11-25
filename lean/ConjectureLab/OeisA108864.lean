@@ -124,8 +124,8 @@ theorem isPrime_of_noDivisor {p fuel : Nat}
     exact False.elim (noDivisorRange_sound fuel 2 hbound hcheck d hd2 hdd hdvd)
   · have hqd : q ≤ d := by omega
     have hqq : q * q ≤ p := by
-      rw [hq, Nat.mul_comm]
-      exact Nat.mul_le_mul_left q hqd
+      rw [hq]
+      exact Nat.mul_le_mul_right q hqd
     exact False.elim (noDivisorRange_sound fuel 2 hbound hcheck q hq2 hqq hq_dvd)
 
 /-- Self-contained Euclidean divisibility lemma: if `a ∣ x * b` and `a ∣ y * b`,
@@ -149,9 +149,11 @@ theorem dvd_gcd_mul_right {a b : Nat} :
         exact h2
       have hdiv2 : a ∣ (x + 1) * b * (y / (x + 1)) := Nat.dvd_trans hx (Nat.dvd_mul_right _ _)
       have hdiv1 : a ∣ (y % (x + 1)) * b := by
-        have hsum : a ∣ (y % (x + 1)) * b + (x + 1) * b * (y / (x + 1)) := by
-          rw [hdecomp]; exact hy
-        exact (Nat.dvd_add_left hdiv2).mp hsum
+        have ⟨c1, hc1⟩ := hy
+        have ⟨c2, hc2⟩ := hdiv2
+        refine ⟨c1 - c2, ?_⟩
+        rw [Nat.mul_sub]
+        omega
       exact dvd_gcd_mul_right (y % (x + 1)) (x + 1) hdiv1 hx
 termination_by x => x
 
@@ -300,10 +302,11 @@ theorem foldl_range_eq_sub_filter_sum (n : Nat) (divs : List Nat)
         induction l with
         | nil => rfl
         | cons x xs ih =>
-          have : decide (x < 0) = false := by simp
-          simp [List.filter_cons, this, ih]
-      rw [hzero divs]
-      simp [List.range]
+          have hfalse : decide (x < 0) = false := by simp
+          rw [List.filter_cons, hfalse]
+          exact ih
+      rw [hzero divs, Nat.sub_zero]
+      rfl
   | k + 1, hk => by
       have ih := foldl_range_eq_sub_filter_sum n divs hnd hmem hsum k (by omega)
       rw [List.range_succ, List.foldl_append, ih]
