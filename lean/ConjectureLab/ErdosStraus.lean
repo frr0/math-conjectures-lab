@@ -55,7 +55,7 @@ theorem erdos_straus_three_mod_four (k : Nat) : HasErdosStraus (4 * k + 3) := by
       _ = n * (8 * (m * m)) := by rw [Nat.mul_left_comm]
   calc 4 * m * y * y = (n * (y + m + m)) * y := by rw [hcore]
     _ = n * ((y + m + m) * y) := by rw [Nat.mul_assoc]
-    _ = n * (y * y + m * y + m * y) := by rw [Nat.add_mul, Nat.add_mul]
+    _ = n * (y * y + m * y + m * y) := by rw [Nat.add_mul (y + m) m y, Nat.add_mul y m y]
 
 /-- Case 3: every `n = 8 * k + 5`. -/
 theorem erdos_straus_five_mod_eight (k : Nat) : HasErdosStraus (8 * k + 5) := by
@@ -83,7 +83,7 @@ theorem erdos_straus_five_mod_eight (k : Nat) : HasErdosStraus (8 * k + 5) := by
         = (4 * 2) * m * (2 * z) := by rw [← Nat.mul_assoc 4 2 m]
       _ = 8 * (m * (2 * z)) := by rw [Nat.mul_assoc]
       _ = 8 * (2 * (m * z)) := by rw [Nat.mul_left_comm m 2 z]
-      _ = 16 * (m * (m * n)) := by omega
+      _ = 16 * (m * (m * n)) := by dsimp [z]; omega
       _ = 16 * (m * (n * m)) := by rw [Nat.mul_comm m n]
       _ = 16 * (n * (m * m)) := by rw [Nat.mul_left_comm m n m]
       _ = n * (16 * (m * m)) := by rw [Nat.mul_left_comm]
@@ -95,7 +95,8 @@ theorem erdos_straus_five_mod_eight (k : Nat) : HasErdosStraus (8 * k + 5) := by
   calc 4 * (2 * m) * (2 * z) * z
       = (n * (2 * z + 2 * m + 4 * m)) * z := by rw [hcore]
     _ = n * ((2 * z + 2 * m + 4 * m) * z) := by rw [Nat.mul_assoc]
-    _ = n * (2 * z * z + 2 * m * z + 4 * m * z) := by rw [Nat.add_mul, Nat.add_mul]
+    _ = n * (2 * z * z + 2 * m * z + 4 * m * z) := by
+          rw [Nat.add_mul (2 * z + 2 * m) (4 * m) z, Nat.add_mul (2 * z) (2 * m) z]
     _ = n * (2 * z * z + 2 * m * z + 2 * m * (2 * z)) := by rw [h2mz]
 
 /-- Master partial theorem: Erdős–Straus holds for every `n ≥ 2` with `n % 8 ≠ 1`
