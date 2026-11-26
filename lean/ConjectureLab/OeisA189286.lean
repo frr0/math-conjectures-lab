@@ -223,12 +223,9 @@ theorem v2_mul (a b : Nat) (ha : 0 < a) (hb : 0 < b) : v2 (a * b) = v2 a + v2 b 
         _ = (2 ^ v2 b * 2) * (ob / 2) := (Nat.mul_assoc (2 ^ v2 b) 2 (ob / 2)).symm
   have hmul : a * b = 2 ^ (v2 a + v2 b) * (oa * ob) := by
     rw [hoa, hob, Nat.pow_add]
-    calc (2 ^ v2 a * oa) * (2 ^ v2 b * ob)
-        = 2 ^ v2 a * (oa * (2 ^ v2 b * ob)) := by rw [Nat.mul_assoc]
-      _ = 2 ^ v2 a * ((oa * 2 ^ v2 b) * ob) := by rw [← Nat.mul_assoc oa]
-      _ = 2 ^ v2 a * ((2 ^ v2 b * oa) * ob) := by rw [Nat.mul_comm oa (2 ^ v2 b)]
-      _ = (2 ^ v2 a * 2 ^ v2 b) * (oa * ob) := by
-        rw [Nat.mul_assoc (2 ^ v2 b) oa ob, ← Nat.mul_assoc (2 ^ v2 a) (2 ^ v2 b) (oa * ob)]
+    rw [Nat.mul_assoc (2 ^ v2 a) oa (2 ^ v2 b * ob)]
+    rw [Nat.mul_left_comm oa (2 ^ v2 b) ob]
+    rw [← Nat.mul_assoc (2 ^ v2 a) (2 ^ v2 b) (oa * ob)]
   have hdvd : 2 ^ (v2 a + v2 b) ∣ a * b := ⟨oa * ob, hmul⟩
   have hnot : ¬ (2 ^ (v2 a + v2 b + 1) ∣ a * b) := by
     intro ⟨q, hq⟩
@@ -257,10 +254,12 @@ theorem v2_succ_add_s2_succ (n : Nat) : v2 (n + 1) + s2 (n + 1) = s2 n + 1 := by
       have heq : n + 1 = 2 * (n / 2 + 1) := by omega
       rw [heq, v2_two_mul (n / 2 + 1) (by omega), s2_two_mul]
       have ih' := ih (n / 2) hlt
-      have hassoc : 1 + v2 (n / 2 + 1) + s2 (n / 2 + 1) =
-          1 + (v2 (n / 2 + 1) + s2 (n / 2 + 1)) := Nat.add_assoc _ _ _
-      rw [hassoc, ih', hn, s2_two_mul_add_one]
-      simp only [Nat.add_assoc, Nat.add_comm]
+      calc 1 + v2 (n / 2 + 1) + s2 (n / 2 + 1)
+          = 1 + (v2 (n / 2 + 1) + s2 (n / 2 + 1)) := Nat.add_assoc _ _ _
+        _ = 1 + (s2 (n / 2) + 1) := congrArg (1 + ·) ih'
+        _ = (s2 (n / 2) + 1) + 1 := Nat.add_comm _ _
+        _ = s2 (2 * (n / 2) + 1) + 1 := congrArg (· + 1) (s2_two_mul_add_one (n / 2)).symm
+        _ = s2 n + 1 := congrArg (fun x => s2 x + 1) hn.symm
 
 def fact : Nat → Nat
   | 0 => 1
