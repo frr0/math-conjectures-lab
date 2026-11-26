@@ -1,9 +1,5 @@
-# OpenTofu / Terraform
-infra/.terraform/
-infra/terraform.tfstate
-infra/terraform.tfstate.*
-infra/terraform.tfvars
-infra/*.tfplan
+# OpenTofu / Terraform (kept local only)
+infra/
 
 # Python
 __pycache__/

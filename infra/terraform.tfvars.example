@@ -1,4 +1,0 @@
-github_owner    = "your-github-username"
-repo_name       = "math-conjectures-lab"
-visibility      = "private"
-enable_rulesets = false
