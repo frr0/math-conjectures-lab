@@ -220,7 +220,7 @@ theorem v2_mul (a b : Nat) (ha : 0 < a) (hb : 0 < b) : v2 (a * b) = v2 a + v2 b 
       rw [Nat.pow_succ]
       calc b = 2 ^ v2 b * ob := hob
         _ = 2 ^ v2 b * (2 * (ob / 2)) := congrArg (2 ^ v2 b * ·) hq
-        _ = (2 ^ v2 b * 2) * (ob / 2) := by rw [← Nat.mul_assoc]
+        _ = (2 ^ v2 b * 2) * (ob / 2) := (Nat.mul_assoc (2 ^ v2 b) 2 (ob / 2)).symm
   have hmul : a * b = 2 ^ (v2 a + v2 b) * (oa * ob) := by
     rw [hoa, hob, Nat.pow_add]
     calc (2 ^ v2 a * oa) * (2 ^ v2 b * ob)
@@ -256,7 +256,9 @@ theorem v2_succ_add_s2_succ (n : Nat) : v2 (n + 1) + s2 (n + 1) = s2 n + 1 := by
       have heq : n + 1 = 2 * (n / 2 + 1) := by omega
       rw [heq, v2_two_mul (n / 2 + 1) (by omega), s2_two_mul]
       have ih' := ih (n / 2) hlt
-      rw [hn, s2_two_mul_add_one, Nat.add_assoc 1, ih']
+      have hassoc : 1 + v2 (n / 2 + 1) + s2 (n / 2 + 1) =
+          1 + (v2 (n / 2 + 1) + s2 (n / 2 + 1)) := Nat.add_assoc _ _ _
+      rw [hassoc, ih', hn, s2_two_mul_add_one]
       omega
 
 def fact : Nat → Nat
@@ -660,6 +662,7 @@ theorem v2_S_pow2 (r : Nat) : v2 (S (2 ^ r)) = 3 := by
     exact hnd16 hsub
   have hle : 3 ≤ v2 (S n) := (pow2_dvd_iff_le_v2 3 _ (S_pos n)).mp hS8
   have hlt : ¬ (4 ≤ v2 (S n)) := fun h => hS16 ((pow2_dvd_iff_le_v2 4 _ (S_pos n)).mpr h)
+  clear hint hS_eq hv2t hd8 hnd16 hd8_int hS8 hS16 hbound hS_split hs2n hn
   omega
 
 theorem v2_denom_pow2 (r : Nat) : v2 (denom (2 ^ r)) = 0 := by
@@ -719,9 +722,18 @@ theorem dvd_S_nonpow2 (n : Nat) (hn : 1 ≤ n) (hnot : ¬ ∃ r : Nat, n = 2 ^ r
                 _ = (2 ^ v2 (f k) * 2) * (o / 2) := by rw [← Nat.mul_assoc]
           rw [hv] at ho
           have ho' : o = 2 * (o / 2) + 1 := by omega
-          rw [ho, ho', Nat.mul_add, Nat.mul_one, ← Nat.mul_assoc, ← Nat.pow_succ]
-          have hM : 2 * s2 n + 1 = M := rfl
-          rw [hM, Nat.add_comm, Nat.mul_comm (2 ^ M) (o / 2), Nat.add_mul_mod_self_right]
+          have hf_eq : f k = 2 ^ (2 * s2 n) + (o / 2) * 2 ^ M := by
+            calc f k = 2 ^ (2 * s2 n) * o := ho
+              _ = 2 ^ (2 * s2 n) * (2 * (o / 2) + 1) := congrArg (2 ^ (2 * s2 n) * ·) ho'
+              _ = 2 ^ (2 * s2 n) * (2 * (o / 2)) + 2 ^ (2 * s2 n) * 1 := Nat.mul_add _ _ _
+              _ = (2 ^ (2 * s2 n) * 2) * (o / 2) + 2 ^ (2 * s2 n) := by
+                rw [← Nat.mul_assoc, Nat.mul_one]
+              _ = 2 ^ M * (o / 2) + 2 ^ (2 * s2 n) := by
+                have hMp : 2 ^ M = 2 ^ (2 * s2 n) * 2 := Nat.pow_succ 2 (2 * s2 n)
+                rw [← hMp]
+              _ = 2 ^ (2 * s2 n) + (o / 2) * 2 ^ M := by
+                rw [Nat.add_comm, Nat.mul_comm (2 ^ M) (o / 2)]
+          rw [hf_eq, Nat.add_mul_mod_self_right]
         · simp only [hsub, ↓reduceIte, Nat.zero_mul]
           have hgt : s2 n < s2 k + s2 (n - k) := by
             have hle := s2_add_le k (n - k)
@@ -747,7 +759,7 @@ theorem dvd_S_nonpow2 (n : Nat) (hn : 1 ≤ n) (hnot : ¬ ∃ r : Nat, n = 2 ^ r
           have : s2 n = (s2 n - 1) + 1 := by omega
           rw [this, Nat.pow_succ, Nat.mul_comm]
         rw [hpow] at hcnt
-        omega
+        exact (Nat.eq_of_mul_eq_mul_left (by omega : 0 < 2) hcnt).symm
       rw [hcnt_pow] at hmod
       have heven_cnt : 2 ∣ 2 ^ (s2 n - 1) := by
         have hsplit_s : s2 n - 1 = (s2 n - 2) + 1 := by omega
