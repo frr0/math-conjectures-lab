@@ -223,9 +223,7 @@ theorem v2_mul (a b : Nat) (ha : 0 < a) (hb : 0 < b) : v2 (a * b) = v2 a + v2 b 
         _ = (2 ^ v2 b * 2) * (ob / 2) := (Nat.mul_assoc (2 ^ v2 b) 2 (ob / 2)).symm
   have hmul : a * b = 2 ^ (v2 a + v2 b) * (oa * ob) := by
     rw [hoa, hob, Nat.pow_add]
-    rw [Nat.mul_assoc (2 ^ v2 a) oa (2 ^ v2 b * ob)]
-    rw [Nat.mul_left_comm oa (2 ^ v2 b) ob]
-    rw [← Nat.mul_assoc (2 ^ v2 a) (2 ^ v2 b) (oa * ob)]
+    simp only [Nat.mul_assoc, Nat.mul_left_comm, Nat.mul_comm]
   have hdvd : 2 ^ (v2 a + v2 b) ∣ a * b := ⟨oa * ob, hmul⟩
   have hnot : ¬ (2 ^ (v2 a + v2 b + 1) ∣ a * b) := by
     intro ⟨q, hq⟩
