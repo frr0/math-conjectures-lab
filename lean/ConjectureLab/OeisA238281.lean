@@ -30,6 +30,7 @@ structure CandidateRecord where
   two_k_plus_one : Nat
   c1 : Nat
   c2 : Nat
+deriving DecidableEq, Repr
 
 /-- Table of computed prime counts for all admissible k at n = 14. -/
 def table14 : List CandidateRecord :=
@@ -42,12 +43,32 @@ def table14 : List CandidateRecord :=
     ⟨9, 19, 1, 4⟩,
     ⟨11, 23, 2, 3⟩ ]
 
+/-- Explicit mismatch checks for each candidate k < 14 with 2k + 1 prime. -/
+theorem k1_mismatch : (6 : Nat) ≠ 3 := by decide
+theorem k2_mismatch : (3 : Nat) ≠ 4 := by decide
+theorem k3_mismatch : (4 : Nat) ≠ 3 := by decide
+theorem k5_mismatch : (3 : Nat) ≠ 4 := by decide
+theorem k6_mismatch : (4 : Nat) ≠ 2 := by decide
+theorem k8_mismatch : (4 : Nat) ≠ 1 := by decide
+theorem k9_mismatch : (1 : Nat) ≠ 4 := by decide
+theorem k11_mismatch : (2 : Nat) ≠ 3 := by decide
+
 /-- Theorem: For every candidate record in `table14`, the prime counts `c1` and `c2` differ. -/
 theorem table14_all_mismatched :
     ∀ r ∈ table14, r.c1 ≠ r.c2 := by
   intro r hr
-  simp only [table14, List.mem_cons, List.not_mem_nil] at hr
-  rcases hr with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl <;> decide
+  simp only [table14, List.mem_cons] at hr
+  rcases hr with rfl | rfl | rfl | rfl | rfl | rfl | rfl | hr
+  · exact k1_mismatch
+  · exact k2_mismatch
+  · exact k3_mismatch
+  · exact k5_mismatch
+  · exact k6_mismatch
+  · exact k8_mismatch
+  · exact k9_mismatch
+  · rcases hr with rfl | h
+    · exact k11_mismatch
+    · contradiction
 
 /-- Counterexample witness property: n = 14 satisfies the conjecture hypothesis (1 < 14 and 14 ≠ 8). -/
 theorem n14_admissible : 1 < 14 ∧ 14 ≠ 8 := by
