@@ -222,8 +222,11 @@ theorem v2_mul (a b : Nat) (ha : 0 < a) (hb : 0 < b) : v2 (a * b) = v2 a + v2 b 
         _ = 2 ^ v2 b * (2 * (ob / 2)) := congrArg (2 ^ v2 b * ·) hq
         _ = (2 ^ v2 b * 2) * (ob / 2) := (Nat.mul_assoc (2 ^ v2 b) 2 (ob / 2)).symm
   have hmul : a * b = 2 ^ (v2 a + v2 b) * (oa * ob) := by
-    rw [hoa, hob, Nat.pow_add]
-    simp only [Nat.mul_assoc, Nat.mul_left_comm, Nat.mul_comm]
+    have hac : (2 ^ v2 a * oa) * (2 ^ v2 b * ob) = 2 ^ (v2 a + v2 b) * (oa * ob) := by
+      rw [Nat.pow_add]
+      simp only [Nat.mul_assoc, Nat.mul_left_comm, Nat.mul_comm]
+    calc a * b = (2 ^ v2 a * oa) * (2 ^ v2 b * ob) := congrArg₂ (· * ·) hoa hob
+      _ = 2 ^ (v2 a + v2 b) * (oa * ob) := hac
   have hdvd : 2 ^ (v2 a + v2 b) ∣ a * b := ⟨oa * ob, hmul⟩
   have hnot : ¬ (2 ^ (v2 a + v2 b + 1) ∣ a * b) := by
     intro ⟨q, hq⟩
