@@ -225,7 +225,7 @@ theorem v2_mul (a b : Nat) (ha : 0 < a) (hb : 0 < b) : v2 (a * b) = v2 a + v2 b 
     rw [hoa, hob, Nat.pow_add]
     calc (2 ^ v2 a * oa) * (2 ^ v2 b * ob)
         = 2 ^ v2 a * (oa * (2 ^ v2 b * ob)) := by rw [Nat.mul_assoc]
-      _ = 2 ^ v2 a * ((oa * 2 ^ v2 b) * ob) := by rw [Nat.mul_assoc oa]
+      _ = 2 ^ v2 a * ((oa * 2 ^ v2 b) * ob) := by rw [← Nat.mul_assoc oa]
       _ = 2 ^ v2 a * ((2 ^ v2 b * oa) * ob) := by rw [Nat.mul_comm oa (2 ^ v2 b)]
       _ = (2 ^ v2 a * 2 ^ v2 b) * (oa * ob) := by
         rw [Nat.mul_assoc (2 ^ v2 b) oa ob, ← Nat.mul_assoc (2 ^ v2 a) (2 ^ v2 b) (oa * ob)]
@@ -260,7 +260,7 @@ theorem v2_succ_add_s2_succ (n : Nat) : v2 (n + 1) + s2 (n + 1) = s2 n + 1 := by
       have hassoc : 1 + v2 (n / 2 + 1) + s2 (n / 2 + 1) =
           1 + (v2 (n / 2 + 1) + s2 (n / 2 + 1)) := Nat.add_assoc _ _ _
       rw [hassoc, ih', hn, s2_two_mul_add_one]
-      exact Nat.add_comm 1 (s2 (n / 2) + 1)
+      simp only [Nat.add_assoc, Nat.add_comm]
 
 def fact : Nat → Nat
   | 0 => 1
