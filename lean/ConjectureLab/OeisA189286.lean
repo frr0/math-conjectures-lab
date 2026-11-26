@@ -225,7 +225,8 @@ theorem v2_mul (a b : Nat) (ha : 0 < a) (hb : 0 < b) : v2 (a * b) = v2 a + v2 b 
     have hac : (2 ^ v2 a * oa) * (2 ^ v2 b * ob) = 2 ^ (v2 a + v2 b) * (oa * ob) := by
       rw [Nat.pow_add]
       simp only [Nat.mul_assoc, Nat.mul_left_comm, Nat.mul_comm]
-    calc a * b = (2 ^ v2 a * oa) * (2 ^ v2 b * ob) := congrArg₂ (· * ·) hoa hob
+    calc a * b = (2 ^ v2 a * oa) * b := congrArg (· * b) hoa
+      _ = (2 ^ v2 a * oa) * (2 ^ v2 b * ob) := congrArg ((2 ^ v2 a * oa) * ·) hob
       _ = 2 ^ (v2 a + v2 b) * (oa * ob) := hac
   have hdvd : 2 ^ (v2 a + v2 b) ∣ a * b := ⟨oa * ob, hmul⟩
   have hnot : ¬ (2 ^ (v2 a + v2 b + 1) ∣ a * b) := by
@@ -394,7 +395,7 @@ theorem v2_t (k : Nat) : v2 (t k) = 2 * s2 k := by
     v2_mul _ _ (choose_pos _ _ (by omega)) (choose_pos _ _ (by omega))
   omega
 
-theorem v2_t_pair (n k : Nat) (hk : k ≤ n) :
+theorem v2_t_pair (n k : Nat) (_hk : k ≤ n) :
     v2 (t k * t (n - k)) = 2 * (s2 k + s2 (n - k)) := by
   rw [v2_mul _ _ (t_pos k) (t_pos (n - k)), v2_t k, v2_t (n - k)]
   omega
