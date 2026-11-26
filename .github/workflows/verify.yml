@@ -39,5 +39,11 @@ jobs:
             ~/.elan
           key: lean-${{ hashFiles('lean/lean-toolchain', 'lean/lakefile.toml', 'lean/lake-manifest.json') }}
 
+      - name: Fetch Mathlib cache
+        run: |
+          cd lean
+          lake update
+          lake exe cache get
+
       - name: Build Lean 4 and audit axioms
         run: bash scripts/verify_lean.sh
