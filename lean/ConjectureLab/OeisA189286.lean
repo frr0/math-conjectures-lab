@@ -227,7 +227,8 @@ theorem v2_mul (a b : Nat) (ha : 0 < a) (hb : 0 < b) : v2 (a * b) = v2 a + v2 b 
         = 2 ^ v2 a * (oa * (2 ^ v2 b * ob)) := by rw [Nat.mul_assoc]
       _ = 2 ^ v2 a * ((oa * 2 ^ v2 b) * ob) := by rw [Nat.mul_assoc oa]
       _ = 2 ^ v2 a * ((2 ^ v2 b * oa) * ob) := by rw [Nat.mul_comm oa (2 ^ v2 b)]
-      _ = (2 ^ v2 a * 2 ^ v2 b) * (oa * ob) := by rw [Nat.mul_assoc (2 ^ v2 b), ← Nat.mul_assoc]
+      _ = (2 ^ v2 a * 2 ^ v2 b) * (oa * ob) := by
+        rw [Nat.mul_assoc (2 ^ v2 b) oa ob, ← Nat.mul_assoc (2 ^ v2 a) (2 ^ v2 b) (oa * ob)]
   have hdvd : 2 ^ (v2 a + v2 b) ∣ a * b := ⟨oa * ob, hmul⟩
   have hnot : ¬ (2 ^ (v2 a + v2 b + 1) ∣ a * b) := by
     intro ⟨q, hq⟩
@@ -259,7 +260,7 @@ theorem v2_succ_add_s2_succ (n : Nat) : v2 (n + 1) + s2 (n + 1) = s2 n + 1 := by
       have hassoc : 1 + v2 (n / 2 + 1) + s2 (n / 2 + 1) =
           1 + (v2 (n / 2 + 1) + s2 (n / 2 + 1)) := Nat.add_assoc _ _ _
       rw [hassoc, ih', hn, s2_two_mul_add_one]
-      omega
+      exact Nat.add_comm 1 (s2 (n / 2) + 1)
 
 def fact : Nat → Nat
   | 0 => 1
@@ -662,7 +663,7 @@ theorem v2_S_pow2 (r : Nat) : v2 (S (2 ^ r)) = 3 := by
     exact hnd16 hsub
   have hle : 3 ≤ v2 (S n) := (pow2_dvd_iff_le_v2 3 _ (S_pos n)).mp hS8
   have hlt : ¬ (4 ≤ v2 (S n)) := fun h => hS16 ((pow2_dvd_iff_le_v2 4 _ (S_pos n)).mpr h)
-  clear hint hS_eq hv2t hd8 hnd16 hd8_int hS8 hS16 hbound hS_split hs2n hn
+  change v2 (S n) = 3
   omega
 
 theorem v2_denom_pow2 (r : Nat) : v2 (denom (2 ^ r)) = 0 := by
@@ -756,8 +757,9 @@ theorem dvd_S_nonpow2 (n : Nat) (hn : 1 ≤ n) (hnot : ¬ ∃ r : Nat, n = 2 ^ r
       have hcnt_pow : sumRange m (isSub n) = 2 ^ (s2 n - 1) := by
         rw [count_isSub n] at hcnt
         have hpow : 2 ^ s2 n = 2 * 2 ^ (s2 n - 1) := by
-          have : s2 n = (s2 n - 1) + 1 := by omega
-          rw [this, Nat.pow_succ, Nat.mul_comm]
+          calc 2 ^ s2 n = 2 ^ ((s2 n - 1) + 1) := congrArg (2 ^ ·) (by omega)
+            _ = 2 ^ (s2 n - 1) * 2 := Nat.pow_succ 2 (s2 n - 1)
+            _ = 2 * 2 ^ (s2 n - 1) := Nat.mul_comm _ _
         rw [hpow] at hcnt
         exact (Nat.eq_of_mul_eq_mul_left (by omega : 0 < 2) hcnt).symm
       rw [hcnt_pow] at hmod
