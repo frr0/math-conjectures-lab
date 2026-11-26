@@ -18,10 +18,17 @@ Before claiming a conjecture is resolved, complete every gate in order:
    - Write a complete, self-contained proof in `results/<slug>/README.md` (or `PROOF.md`).
    - Run an adversarial review pass checking edge cases, quantifiers, and hidden assumptions.
 4. **Formal Verification (Lean 4)**
-   - Formalize the exact theorem statement (never silently weaken hypotheses — *no spec gaming*) under `lean/ConjectureLab/`.
+   - Every conjecture published to `main` **must** have a Lean 4 module under `lean/ConjectureLab/` imported in `lean/ConjectureLab.lean` (full theorem formalization for `✅`, or core structural lemmas / exact witness checks for `🟢` / `🟡`).
+   - Never silently weaken hypotheses (*no spec gaming*) when claiming a full formalization (`✅`).
    - No `sorry`, no custom `axiom`, and no untrusted native computation axioms. Allowed axioms: `propext`, `Classical.choice`, `Quot.sound`.
-   - Run `bash scripts/verify_lean.sh` and `python3 scripts/check_repo.py` before opening the publication PR.
+   - Run `python3 scripts/check_repo.py` locally and `bash scripts/verify_lean.sh` (locally if `elan`/`lake` is installed, and always via the `lean-checks` GitHub Actions job before merging).
 
 ## 3. Honest Scope Labeling
 - Distinguish clearly between: **full resolution**, **counterexample**, **partial theorem**, and **finite computational screen**.
 - Never mark a result `✅` in `README.md` unless `scripts/verify_lean.sh` passes cleanly on the exact target theorem.
+
+## 4. Automated GitHub Pipeline
+1. Create a short-lived branch `exp/<slug>` from `main`.
+2. Open a tracking GitHub Issue for the conjecture or pipeline change.
+3. Open a focused PR from `exp/<slug>` targeting `main` and wait for both `python-checks` and `lean-checks` CI jobs to pass.
+4. Squash-merge the PR (`gh pr merge --squash --delete-branch`), close the Issue, pull `main`, and keep `research` synced with `main` (`0 ahead / 0 behind`).

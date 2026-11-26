@@ -50,9 +50,18 @@ def check_lean_sources() -> list[str]:
     if not LEAN_DIR.exists():
         return errors
 
+    root_lean = LEAN_DIR / "ConjectureLab.lean"
+    root_imports = root_lean.read_text(encoding="utf-8") if root_lean.exists() else ""
+
     for lean_file in sorted(LEAN_DIR.rglob("*.lean")):
         if ".lake" in lean_file.parts:
             continue
+        if lean_file.parent.name == "ConjectureLab":
+            mod_name = f"ConjectureLab.{lean_file.stem}"
+            if f"import {mod_name}" not in root_imports:
+                errors.append(
+                    f"{lean_file.relative_to(ROOT)}: not imported in lean/ConjectureLab.lean"
+                )
         text = lean_file.read_text(encoding="utf-8")
         for lineno, line in enumerate(text.splitlines(), start=1):
             stripped = line.split("--", 1)[0]
