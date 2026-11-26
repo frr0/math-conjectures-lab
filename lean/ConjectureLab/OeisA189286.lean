@@ -69,12 +69,10 @@ theorem three_mul_ne_pow2 : ∀ (r n : Nat), 0 < n → 3 * n ≠ 2 ^ r
     contributing `2^(2s + 1)` sum to a multiple of `2^(2s + 2)`. -/
 theorem submask_pairs_divisible (s : Nat) (hs : 2 ≤ s) :
     2 ^ (2 * s + 2) ∣ 2 ^ (s - 1) * 2 ^ (2 * s + 1) := by
-  have hsplit : s - 1 = (s - 2) + 1 := by omega
-  rw [hsplit, Nat.pow_succ]
   refine ⟨2 ^ (s - 2), ?_⟩
-  have hpow : 2 ^ (2 * s + 2) = 2 ^ (2 * s + 1) * 2 := by
-    rw [Nat.pow_succ]
-  rw [hpow]
-  simp only [Nat.mul_assoc, Nat.mul_comm]
+  have hsplit : s - 1 = (s - 2) + 1 := by omega
+  have hpow : 2 ^ (2 * s + 2) = 2 ^ (2 * s + 1) * 2 := Nat.pow_succ 2 (2 * s + 1)
+  rw [hsplit, Nat.pow_succ, hpow]
+  rw [Nat.mul_assoc, Nat.mul_comm 2 (2 ^ (2 * s + 1)), Nat.mul_comm (2 ^ (s - 2))]
 
 end ConjectureLab.OeisA189286

@@ -33,7 +33,18 @@ theorem prime_pair_mod_six (p : Nat) (hp : IsPrime p) (hgt : 3 < p)
   have ⟨hp2, hp3⟩ := prime_gt3_not_dvd_2_3 p hp hgt
   have hqgt : 3 < 2 * p - 1 := by omega
   have ⟨_, hq3⟩ := prime_gt3_not_dvd_2_3 (2 * p - 1) hq hqgt
-  omega
+  have hp_eq : p = 6 * (p / 6) + p % 6 := (Nat.div_add_mod p 6).symm
+  rcases (by omega : p % 6 = 0 ∨ p % 6 = 1 ∨ p % 6 = 2 ∨ p % 6 = 3 ∨ p % 6 = 4 ∨ p % 6 = 5) with
+    h | h | h | h | h | h
+  · exfalso; omega
+  · exact h
+  · exfalso; omega
+  · exfalso; omega
+  · exfalso; omega
+  · exfalso
+    have h2p : 2 * p - 1 = 3 * (4 * (p / 6) + 3) := by omega
+    rw [h2p] at hq3
+    omega
 
 /-- Under the same hypotheses, `2p + 1` is divisible by `3` and `> 3`, hence composite. -/
 theorem two_p_plus_one_composite (p : Nat) (hp : IsPrime p) (hgt : 3 < p)
