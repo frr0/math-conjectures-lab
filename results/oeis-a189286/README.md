@@ -2,7 +2,7 @@
 
 - **Source:** Zhi-Wei Sun (Apr 19, 2011), [OEIS A189286](https://oeis.org/A189286); formalized as an open problem in Google DeepMind's `formal-conjectures` (`FormalConjectures/OEIS/189286.lean`, `conjecture_3`).
 - **Status:** Proved (Complete 2-adic valuation proof for all $n \ge 1$).
-- **Verification:** 🟢 (Complete self-contained mathematical proof + deterministic Python verifier `verify.py` for $1 \le n \le 128$ + Lean 4 structural lemmas & kernel checks in `lean/ConjectureLab/OeisA189286.lean`).
+- **Verification:** ✅ (Complete Lean 4 formal proof of `conjecture_3` for all $n \ge 1$ in `lean/ConjectureLab/OeisA189286.lean` with zero `sorry` and only standard axioms, plus deterministic Python verifier `verify.py` for $1 \le n \le 128$).
 
 ## Exact Statement
 
