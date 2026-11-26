@@ -2,7 +2,7 @@
 
 - **Source:** Lorenzo Sauras Altuzarra (Oct 13, 2020), [OEIS A046969](https://oeis.org/A046969); formalized as an open problem in Google DeepMind's `formal-conjectures` (`FormalConjectures/OEIS/46969.lean`, `conjecture1`).
 - **Status:** Proved (Complete mathematical resolution for all primes $p > 3$ with $2p - 1$ prime).
-- **Verification:** 🟢 (Complete self-contained mathematical proof + exact Python verifier `verify.py` checking $p \le 100$; Lean 4 formalization pending local toolchain).
+- **Verification:** 🟢 (Complete self-contained mathematical proof + exact Python verifier `verify.py` checking $p \le 100$ + Lean 4 modular core & initial-term checks in `lean/ConjectureLab/OeisA046969.lean`).
 
 ## Exact Statement
 
