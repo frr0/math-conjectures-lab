@@ -13,6 +13,7 @@ Personal research lab for automated & AI-assisted mathematical conjecture explor
 | 5 | OEIS A189409 (`conjecture_1`: $\mathrm{primorial}(n)^2 + 1$ squarefree) | Disproved ($a(9) \equiv 0 \pmod{29^2}$) | ✅ | [oeis-a189409](results/oeis-a189409/) |
 | 6 | OEIS A092243 (`conjecture1`: prime-gap tug-of-war $> 0$ for $n > 250{,}000$) | Proved ($a(261{,}150) = 1 > 0$) | 🟢 | [oeis-a092243](results/oeis-a092243/) |
 | 7 | OEIS A108864 (last odd term with perfect deficiency $\le 10$) | Disproved ($m = 815{,}634{,}435$, $\mathrm{pd}(m) = 6$) | ✅ | [oeis-a108864](results/oeis-a108864/) |
+| 8 | OEIS A046969 (`conjecture1`: $a(p)/12$ prime for $p > 3$, $2p-1$ prime) | Proved ($a(p) = 12(2p - 1)$) | 🟢 | [oeis-a046969](results/oeis-a046969/) |
 
 ### Verification Legend
 - ✅ **Lean-verified**: Complete Lean 4 proof checked with zero `sorry` and only standard axioms (`propext`, `Classical.choice`, `Quot.sound`).
