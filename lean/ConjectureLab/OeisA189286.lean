@@ -154,6 +154,7 @@ theorem pow2_v2_dvd (n : Nat) : 2 ^ v2 n ∣ n := by
         obtain ⟨q, hq⟩ := ih (n / 2) hlt
         rw [v2_even n (by omega) hmod, Nat.add_comm, Nat.pow_succ]
         refine ⟨q, ?_⟩
+        rw [Nat.pow_succ]
         calc n = 2 * (n / 2) := by omega
           _ = 2 * (2 ^ v2 (n / 2) * q) := by rw [hq]
           _ = (2 ^ v2 (n / 2) * 2) * q := by
@@ -203,18 +204,24 @@ theorem v2_mul (a b : Nat) (ha : 0 < a) (hb : 0 < b) : v2 (a * b) = v2 a + v2 b 
     by_cases hodd : oa % 2 = 1
     · exact hodd
     · exfalso
-      obtain ⟨q, hq⟩ := Nat.dvd_of_mod_eq_zero (by omega : oa % 2 = 0)
+      have hq : oa = 2 * (oa / 2) := by omega
       apply pow2_succ_v2_not_dvd a ha
-      refine ⟨q, ?_⟩
-      rw [hoa, hq, Nat.pow_succ, Nat.mul_assoc, Nat.mul_comm 2 q, ← Nat.mul_assoc]
+      refine ⟨oa / 2, ?_⟩
+      rw [Nat.pow_succ]
+      calc a = 2 ^ v2 a * oa := hoa
+        _ = 2 ^ v2 a * (2 * (oa / 2)) := by rw [hq]
+        _ = (2 ^ v2 a * 2) * (oa / 2) := by rw [← Nat.mul_assoc]
   have hob_odd : ob % 2 = 1 := by
     by_cases hodd : ob % 2 = 1
     · exact hodd
     · exfalso
-      obtain ⟨q, hq⟩ := Nat.dvd_of_mod_eq_zero (by omega : ob % 2 = 0)
+      have hq : ob = 2 * (ob / 2) := by omega
       apply pow2_succ_v2_not_dvd b hb
-      refine ⟨q, ?_⟩
-      rw [hob, hq, Nat.pow_succ, Nat.mul_assoc, Nat.mul_comm 2 q, ← Nat.mul_assoc]
+      refine ⟨ob / 2, ?_⟩
+      rw [Nat.pow_succ]
+      calc b = 2 ^ v2 b * ob := hob
+        _ = 2 ^ v2 b * (2 * (ob / 2)) := by rw [hq]
+        _ = (2 ^ v2 b * 2) * (ob / 2) := by rw [← Nat.mul_assoc]
   have hmul : a * b = 2 ^ (v2 a + v2 b) * (oa * ob) := by
     rw [hoa, hob, Nat.pow_add]
     calc (2 ^ v2 a * oa) * (2 ^ v2 b * ob)
@@ -229,10 +236,7 @@ theorem v2_mul (a b : Nat) (ha : 0 < a) (hb : 0 < b) : v2 (a * b) = v2 a + v2 b 
     have hpos : 0 < 2 ^ (v2 a + v2 b) := Nat.pow_pos (by omega)
     have hcancel : oa * ob = 2 * q := Nat.eq_of_mul_eq_mul_left hpos hq
     have hmod : (oa * ob) % 2 = 1 := by
-      have hoa' : oa = 2 * (oa / 2) + 1 := by omega
-      have hob' : ob = 2 * (ob / 2) + 1 := by omega
-      rw [hoa', hob']
-      omega
+      rw [Nat.mul_mod, hoa_odd, hob_odd]
     omega
   have hab : 0 < a * b := Nat.mul_pos ha hb
   have h1 : v2 a + v2 b ≤ v2 (a * b) := (pow2_dvd_iff_le_v2 _ _ hab).mp hdvd
@@ -253,7 +257,7 @@ theorem v2_succ_add_s2_succ (n : Nat) : v2 (n + 1) + s2 (n + 1) = s2 n + 1 := by
       have heq : n + 1 = 2 * (n / 2 + 1) := by omega
       rw [heq, v2_two_mul (n / 2 + 1) (by omega), s2_two_mul]
       have ih' := ih (n / 2) hlt
-      rw [hn, s2_two_mul_add_one]
+      rw [hn, s2_two_mul_add_one, Nat.add_assoc, ih']
       omega
 
 def fact : Nat → Nat
@@ -305,7 +309,9 @@ theorem choose_mul_fact : ∀ (n k : Nat), k ≤ n →
       rw [hsub]
       have ih := choose_mul_fact k k (Nat.le_refl k)
       have hsub0 : k - k = 0 := by omega
-      rw [hsub0, fact, fact, Nat.mul_one] at ih ⊢
+      have h0 : fact 0 = 1 := rfl
+      rw [hsub0, h0, Nat.mul_one] at ih
+      rw [hsub0, h0, Nat.mul_one, fact]
       calc choose k k * ((k + 1) * fact k)
           = (choose k k * fact k) * (k + 1) := by
             rw [Nat.mul_comm (k + 1) (fact k), Nat.mul_assoc]
@@ -320,19 +326,24 @@ theorem choose_mul_fact : ∀ (n k : Nat), k ≤ n →
       have t1 : choose n k * (fact (k + 1) * fact (n - k)) = (k + 1) * fact n := by
         rw [fact]
         calc choose n k * (((k + 1) * fact k) * fact (n - k))
-            = (k + 1) * (choose n k * (fact k * fact (n - k))) := by
-              rw [Nat.mul_assoc (k + 1) (fact k), Nat.mul_comm (k + 1), ← Nat.mul_assoc,
-                  Nat.mul_comm _ (k + 1), Nat.mul_assoc]
+            = choose n k * ((k + 1) * (fact k * fact (n - k))) := by rw [Nat.mul_assoc (k + 1)]
+          _ = (choose n k * (k + 1)) * (fact k * fact (n - k)) := by rw [Nat.mul_assoc]
+          _ = ((k + 1) * choose n k) * (fact k * fact (n - k)) := by rw [Nat.mul_comm (choose n k)]
+          _ = (k + 1) * (choose n k * (fact k * fact (n - k))) := by rw [Nat.mul_assoc]
           _ = (k + 1) * fact n := by rw [ih1]
       have t2 : choose n (k + 1) * (fact (k + 1) * fact (n - k)) = (n - k) * fact n := by
         have hfac : fact (n - k) = (n - k) * fact (n - (k + 1)) := by
           rw [hsub2, fact, ← hsub2]
         rw [hfac]
         calc choose n (k + 1) * (fact (k + 1) * ((n - k) * fact (n - (k + 1))))
-            = (n - k) * (choose n (k + 1) * (fact (k + 1) * fact (n - (k + 1)))) := by
-              rw [Nat.mul_comm (n - k), ← Nat.mul_assoc, Nat.mul_comm _ (n - k),
-                  Nat.mul_assoc, Nat.mul_comm (choose n (k + 1)), ← Nat.mul_assoc,
-                  Nat.mul_comm _ (n - k), Nat.mul_assoc]
+            = choose n (k + 1) * ((n - k) * (fact (k + 1) * fact (n - (k + 1)))) := by
+              rw [Nat.mul_left_comm (fact (k + 1)) (n - k)]
+          _ = (choose n (k + 1) * (n - k)) * (fact (k + 1) * fact (n - (k + 1))) := by
+              rw [Nat.mul_assoc]
+          _ = ((n - k) * choose n (k + 1)) * (fact (k + 1) * fact (n - (k + 1))) := by
+              rw [Nat.mul_comm (choose n (k + 1))]
+          _ = (n - k) * (choose n (k + 1) * (fact (k + 1) * fact (n - (k + 1)))) := by
+              rw [Nat.mul_assoc]
           _ = (n - k) * fact n := by rw [ih2]
       rw [t1, t2, ← Nat.add_mul]
       have hsum : (k + 1) + (n - k) = n + 1 := by omega
@@ -546,28 +557,31 @@ theorem count_isSub (n : Nat) : sumRange (n + 1) (isSub n) = 2 ^ s2 n := by
       · have hn : n = 2 * (n / 2) + 1 := by omega
         have hlt : n / 2 < n := by omega
         have hn1 : n + 1 = 2 * (n / 2 + 1) := by omega
-        rw [hn, hn1, sumRange_even_odd]
-        have hev : sumRange (n / 2 + 1) (fun j => isSub (2 * (n / 2) + 1) (2 * j)) =
+        rw [hn1, sumRange_even_odd]
+        have hs2n : s2 n = s2 (n / 2) + 1 := by
+          calc s2 n = s2 (2 * (n / 2) + 1) := by rw [← hn]
+            _ = s2 (n / 2) + 1 := s2_two_mul_add_one (n / 2)
+        have hev : sumRange (n / 2 + 1) (fun j => isSub n (2 * j)) =
             sumRange (n / 2 + 1) (isSub (n / 2)) := by
           apply sumRange_congr
           intro j hj
           simp only [isSub]
-          have hsub : 2 * (n / 2) + 1 - 2 * j = 2 * (n / 2 - j) + 1 := by omega
-          rw [s2_two_mul, hsub, s2_two_mul_add_one, s2_two_mul_add_one]
+          have hsub : n - 2 * j = 2 * (n / 2 - j) + 1 := by omega
+          rw [s2_two_mul, hsub, s2_two_mul_add_one, hs2n]
           have heq : (s2 j + (s2 (n / 2 - j) + 1) = s2 (n / 2) + 1) ↔
               (s2 j + s2 (n / 2 - j) = s2 (n / 2)) := by omega
           simp [heq]
-        have hodd : sumRange (n / 2 + 1) (fun j => isSub (2 * (n / 2) + 1) (2 * j + 1)) =
+        have hodd : sumRange (n / 2 + 1) (fun j => isSub n (2 * j + 1)) =
             sumRange (n / 2 + 1) (isSub (n / 2)) := by
           apply sumRange_congr
           intro j hj
           simp only [isSub]
-          have hsub : 2 * (n / 2) + 1 - (2 * j + 1) = 2 * (n / 2 - j) := by omega
-          rw [s2_two_mul_add_one, hsub, s2_two_mul, s2_two_mul_add_one]
+          have hsub : n - (2 * j + 1) = 2 * (n / 2 - j) := by omega
+          rw [s2_two_mul_add_one, hsub, s2_two_mul, hs2n]
           have heq : (s2 j + 1 + s2 (n / 2 - j) = s2 (n / 2) + 1) ↔
               (s2 j + s2 (n / 2 - j) = s2 (n / 2)) := by omega
           simp [heq]
-        rw [hev, hodd, ih (n / 2) hlt, s2_two_mul_add_one, Nat.pow_succ]
+        rw [hev, hodd, ih (n / 2) hlt, hn, s2_two_mul_add_one, Nat.pow_succ]
         omega
 
 /-! ## 5. Main Theorem (`OeisA189286.conjecture_3`) -/
@@ -627,10 +641,11 @@ theorem v2_S_pow2 (r : Nat) : v2 (S (2 ^ r)) = 3 := by
     omega
   have hv2t : v2 (2 * t n) = 3 := by
     rw [v2_two_mul (t n) (t_pos n), v2_t n, hs2n]
-  have hd8 : 8 ∣ 2 * t n := (pow2_dvd_iff_le_v2 3 _ (by omega)).mpr (by omega)
+  have hpos2t : 0 < 2 * t n := Nat.mul_pos (by omega) (t_pos n)
+  have hd8 : 8 ∣ 2 * t n := (pow2_dvd_iff_le_v2 3 _ hpos2t).mpr (by omega)
   have hnd16 : ¬ (16 ∣ 2 * t n) := by
     intro h
-    have := (pow2_dvd_iff_le_v2 4 _ (by omega)).mp h
+    have := (pow2_dvd_iff_le_v2 4 _ hpos2t).mp h
     omega
   have hd8_int : 8 ∣ sumRange (n - 1) (fun k => t (k + 1) * t (n - (k + 1))) :=
     Nat.dvd_trans (by decide : 8 ∣ 16) hint
@@ -638,7 +653,11 @@ theorem v2_S_pow2 (r : Nat) : v2 (S (2 ^ r)) = 3 := by
   have hS16 : ¬ (16 ∣ S n) := by
     intro h
     rw [hS_eq] at h
-    exact hnd16 ((Nat.dvd_add_left hint).mp h)
+    have hsub := Nat.dvd_sub h hint
+    have heq : 2 * t n + sumRange (n - 1) (fun k => t (k + 1) * t (n - (k + 1))) -
+        sumRange (n - 1) (fun k => t (k + 1) * t (n - (k + 1))) = 2 * t n := by omega
+    rw [heq] at hsub
+    exact hnd16 hsub
   have hle : 3 ≤ v2 (S n) := (pow2_dvd_iff_le_v2 3 _ (S_pos n)).mp hS8
   have hlt : ¬ (4 ≤ v2 (S n)) := fun h => hS16 ((pow2_dvd_iff_le_v2 4 _ (S_pos n)).mpr h)
   omega
@@ -691,15 +710,19 @@ theorem dvd_S_nonpow2 (n : Nat) (hn : 1 ≤ n) (hnot : ¬ ∃ r : Nat, n = 2 ^ r
             by_cases hodd : o % 2 = 1
             · exact hodd
             · exfalso
-              obtain ⟨q, hq⟩ := Nat.dvd_of_mod_eq_zero (by omega : o % 2 = 0)
+              have hq : o = 2 * (o / 2) := by omega
               apply pow2_succ_v2_not_dvd (f k) hpos
-              refine ⟨q, ?_⟩
-              rw [ho, hq, Nat.pow_succ, Nat.mul_assoc, Nat.mul_comm 2 q, ← Nat.mul_assoc]
+              refine ⟨o / 2, ?_⟩
+              rw [Nat.pow_succ]
+              calc f k = 2 ^ v2 (f k) * o := ho
+                _ = 2 ^ v2 (f k) * (2 * (o / 2)) := by rw [hq]
+                _ = (2 ^ v2 (f k) * 2) * (o / 2) := by rw [← Nat.mul_assoc]
           rw [hv] at ho
           have ho' : o = 2 * (o / 2) + 1 := by omega
           rw [ho, ho', Nat.mul_add, Nat.mul_one, ← Nat.mul_assoc, ← Nat.pow_succ]
           have hM : 2 * s2 n + 1 = M := rfl
-          rw [hM, Nat.mul_comm (2 ^ M) (o / 2), Nat.add_mul_mod_self_right]
+          rw [hM, Nat.add_comm (2 ^ M * (o / 2)), Nat.mul_comm (2 ^ M) (o / 2),
+              Nat.add_mul_mod_self_right]
         · simp only [hsub, ↓reduceIte, Nat.zero_mul]
           have hgt : s2 n < s2 k + s2 (n - k) := by
             have hle := s2_add_le k (n - k)
@@ -736,12 +759,18 @@ theorem dvd_S_nonpow2 (n : Nat) (hn : 1 ≤ n) (hnot : ¬ ∃ r : Nat, n = 2 ^ r
         rw [hq]
         refine ⟨q, ?_⟩
         have hMpow : 2 ^ M = 2 ^ (2 * s2 n) * 2 := Nat.pow_succ 2 (2 * s2 n)
-        rw [hMpow, Nat.mul_assoc, Nat.mul_comm 2 (2 ^ (2 * s2 n)), Nat.mul_comm q]
+        rw [hMpow]
+        calc (2 ^ (s2 n - 2) * 2) * 2 ^ (2 * s2 n)
+            = 2 ^ (s2 n - 2) * (2 * 2 ^ (2 * s2 n)) := by rw [Nat.mul_assoc]
+          _ = 2 ^ (s2 n - 2) * (2 ^ (2 * s2 n) * 2) := by rw [Nat.mul_comm 2]
+          _ = (2 ^ (2 * s2 n) * 2) * 2 ^ (s2 n - 2) := by rw [Nat.mul_comm]
       rw [Nat.mod_eq_zero_of_dvd hdvd_rhs] at hmod
       exact Nat.dvd_of_mod_eq_zero hmod
     obtain ⟨q, hq⟩ := h2
     refine ⟨q, ?_⟩
-    rw [hq, Nat.pow_succ, Nat.mul_comm (2 ^ M) 2, Nat.mul_assoc]
+    rw [hq, Nat.pow_succ]
+    calc 2 * (2 ^ M * q) = (2 * 2 ^ M) * q := by rw [← Nat.mul_assoc]
+      _ = (2 ^ M * 2) * q := by rw [Nat.mul_comm 2]
   by_cases hodd : n % 2 = 1
   · rw [S, hsplit.1 hodd]
     have hcnt : sumRange (n + 1) (isSub n) = 2 * sumRange (n / 2 + 1) (isSub n) := by
@@ -781,7 +810,7 @@ theorem dvd_S_nonpow2 (n : Nat) (hn : 1 ≤ n) (hnot : ¬ ∃ r : Nat, n = 2 ^ r
         change M + 1 ≤ v2 (t (n / 2) * t (n - n / 2))
         have hsub : n - n / 2 = n / 2 := by omega
         have hn2 : n = 2 * (n / 2) := by omega
-        rw [hsub, v2_t_pair n (n / 2) (by omega), hsub]
+        rw [v2_t_pair n (n / 2) (by omega), hsub]
         have hs_eq : s2 (n / 2) = s2 n := by
           calc s2 (n / 2) = s2 (2 * (n / 2)) := (s2_two_mul (n / 2)).symm
             _ = s2 n := by rw [← hn2]
@@ -800,7 +829,7 @@ theorem conjecture_3 (n : Nat) (hn : 1 ≤ n) (hdvd : denom n ∣ S n) :
     by_cases h0 : 0 < a_n
     · exact h0
     · exfalso
-      have ha0 : a_n = 0 := by omega
+      have ha0 : a_n = 0 := Nat.eq_zero_of_not_pos h0
       rw [ha0, Nat.zero_mul] at ha_mul
       have := S_pos n
       omega
