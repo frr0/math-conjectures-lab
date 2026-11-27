@@ -28,7 +28,10 @@ Before claiming a conjecture is resolved, complete every gate in order:
 
 ## 4. Automated GitHub Pipeline
 1. Create a short-lived branch `exp/<slug>` from an up-to-date `main`.
-2. Open a tracking GitHub Issue for the conjecture or pipeline change (check for duplicates first).
+2. Open a tracking GitHub Issue for the conjecture or pipeline change (check for duplicates first) and label it:
+   - conjectures: `open-target` + `claimed` when work starts (`needs-audit` while a proof/axiom audit is pending);
+   - pipeline/docs work: `enhancement` or `documentation`.
 3. Implement, run `python3 scripts/check_repo.py` (and `bash scripts/verify_lean.sh` if `lake` is installed), commit with Conventional Commits, push.
 4. Open a focused PR targeting `main` with `Closes #<issue>` in the body, then enable auto-merge right away: `gh pr merge --auto --squash --delete-branch`. GitHub merges it once both CI jobs pass and closes the Issue; there is no need to poll CI.
-5. If a check fails, inspect it with `gh run view --log-failed`, fix and push to the same branch (auto-merge stays armed). Afterwards `git checkout main && git pull --prune`.
+5. Before the merge, set the outcome labels on the Issue and the PR (`gh issue edit <n> --add-label ... --remove-label claimed,needs-audit`): exactly one of `proved` / `counterexample` / `partial-result`, plus `lean-verified` only for a full `✅` Lean formalization.
+6. If a check fails, inspect it with `gh run view --log-failed`, fix and push to the same branch (auto-merge stays armed). Afterwards `git checkout main && git pull --prune`.
