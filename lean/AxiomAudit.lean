@@ -17,8 +17,12 @@ open Lean Elab Command
 elab "#audit_conjecture_lab_axioms" : command => do
   let env ← getEnv
   let allowed : List Name := [``propext, ``Classical.choice, ``Quot.sound]
-  let decls := env.constants.fold
-    (fun acc n _ => if (`ConjectureLab).isPrefixOf n then acc.push n else acc) #[]
+  -- Roots: user-facing declarations only. Internal names (`_proof_i`, `_cstage2`,
+  -- matchers, ...) are compiler/elaborator artifacts; the kernel-relevant ones are
+  -- still audited transitively because `collectAxioms` follows every constant a
+  -- root's type and value reference.
+  let decls := env.constants.fold (init := #[]) fun acc n _ =>
+    if (`ConjectureLab).isPrefixOf n && !n.isInternal then acc.push n else acc
   if decls.isEmpty then
     throwError "axiom audit: no ConjectureLab declarations found (vacuous audit)"
   let mut bad : Array (Name × Name) := #[]
