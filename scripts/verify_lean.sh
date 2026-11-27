@@ -12,7 +12,7 @@ fi
 echo "[lean] Building workspace in $LEAN_DIR ..."
 (cd "$LEAN_DIR" && lake build)
 
-echo "[lean] Scanning for forbidden 'sorry' or custom 'axiom' declarations ..."
-python3 "$ROOT_DIR/scripts/check_repo.py"
+echo "[lean] Auditing axioms of every ConjectureLab declaration ..."
+(cd "$LEAN_DIR" && lake env lean AxiomAudit.lean)
 
 echo "[lean] Verification succeeded."

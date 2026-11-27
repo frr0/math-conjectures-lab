@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -63,9 +64,20 @@ def check_lean_sources() -> list[str]:
                     f"{lean_file.relative_to(ROOT)}: not imported in lean/ConjectureLab.lean"
                 )
         text = lean_file.read_text(encoding="utf-8")
-        for lineno, line in enumerate(text.splitlines(), start=1):
+        if lean_file.parent.name == "ConjectureLab" and not re.search(
+            r"^namespace ConjectureLab\.", text, re.MULTILINE
+        ):
+            # The Lean axiom audit (lean/AxiomAudit.lean) only inspects ConjectureLab.*
+            errors.append(
+                f"{lean_file.relative_to(ROOT)}: declarations must live in a "
+                "'namespace ConjectureLab.<Module>' block"
+            )
+        # Blank out /- block comments -/ (keeping line numbers) before scanning.
+        code = re.sub(r"/-.*?-/", lambda m: "\n" * m.group().count("\n"), text, flags=re.DOTALL)
+        for lineno, line in enumerate(code.splitlines(), start=1):
             stripped = line.split("--", 1)[0]
-            if "sorry" in stripped.split():
+            # Fast pre-check only; the authoritative check is lean/AxiomAudit.lean.
+            if re.search(r"\bsorry\b", stripped):
                 errors.append(f"{lean_file.relative_to(ROOT)}:{lineno}: contains 'sorry'")
             if stripped.lstrip().startswith("axiom "):
                 errors.append(f"{lean_file.relative_to(ROOT)}:{lineno}: declares custom 'axiom'")

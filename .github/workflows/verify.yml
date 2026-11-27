@@ -2,9 +2,16 @@ name: Verify Conjectures
 
 on:
   push:
-    branches: [main, research]
+    branches: [main]
   pull_request:
-    branches: [main, research]
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   python-checks:
@@ -45,5 +52,5 @@ jobs:
           lake update
           lake exe cache get
 
-      - name: Build Lean 4 and audit axioms
+      - name: Build Lean 4 and run kernel axiom audit
         run: bash scripts/verify_lean.sh
