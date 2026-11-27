@@ -7,6 +7,7 @@ import ConjectureLab.OeisA046969
 import ConjectureLab.OeisA189286
 import ConjectureLab.OeisA238281
 import ConjectureLab.OeisA001481
+import ConjectureLab.OeisA004215
 
 -- Root module for formally verified conjectures in math-conjectures-lab.
 -- Import verified theorem modules here so `lake build` checks them automatically.

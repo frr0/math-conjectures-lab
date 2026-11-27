@@ -14,6 +14,7 @@ Personal research lab for automated & AI-assisted mathematical conjecture explor
 | 6 | OEIS A189286 (`conjecture_3`: $a(n)/8$ odd $\iff n = 2^k$) | Proved ($v_2(a(n)) = 3$ iff $n = 2^k$, else $\ge 4$) | ✅ | [oeis-a189286](results/oeis-a189286/) |
 | 7 | OEIS A238281 (`conjecture_2`: equal prime counts in adjacent intervals) | Disproved (counterexample at $n = 14, 286$) | 🟢 | [oeis-a238281](results/oeis-a238281/) |
 | 8 | OEIS A001481 (Lowell 2022: two distinct sums of two squares never add to $2^k$ except $0+2^k$) | Proved (2-adic descent mod 4) | ✅ | [oeis-a001481](results/oeis-a001481/) |
+| 9 | OEIS A004215 (Neumann 2020: #terms $< 2^n$ equals A023105$(n) - 2$) | Proved (shared recurrence $X(m+3) = 2^m + X(m+1)$) | 🟢 | [oeis-a004215](results/oeis-a004215/) |
 
 ### Verification Legend
 - ✅ **Lean-verified**: Complete Lean 4 proof checked with zero `sorry` and only standard axioms (`propext`, `Classical.choice`, `Quot.sound`).
