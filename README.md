@@ -2,6 +2,8 @@
 
 Personal research lab for automated & AI-assisted mathematical conjecture exploration, computational verification (Python), and formal proofs (**Lean 4**).
 
+**Website:** https://frr0.github.io/math-conjectures-lab/ (rebuilt from `main` on every push).
+
 ## Catalogue
 
 | # | Conjecture | Outcome | Verification | Directory |
@@ -27,7 +29,8 @@ Personal research lab for automated & AI-assisted mathematical conjecture explor
 - `infra/` — OpenTofu (Terraform-compatible) Infrastructure as Code managing the GitHub repo, branches, labels, and rulesets.
 - `results/<slug>/` — Individual conjecture packages (statement, literature check, `explore.py` / `verify.py`, proof notes).
 - `lean/` — Shared Lean 4 formalization workspace (`lake build`).
-- `scripts/` — Repository-wide validation and axiom audit scripts run in CI.
+- `scripts/` — Repository-wide validation, axiom audit and site build (`build_site.py`) scripts run in CI.
+- `site/` — Static front end for the GitHub Pages site (renders `_site/data.json` built from the READMEs).
 - `AGENTS.md` — Operational rules for human/AI research workflows.
 
 ## Quick Start
