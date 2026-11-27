@@ -16,6 +16,7 @@ Personal research lab for automated & AI-assisted mathematical conjecture explor
 | 8 | OEIS A046969 (`conjecture1`: $a(p)/12$ prime for $p > 3$, $2p-1$ prime) | Proved ($a(p) = 12(2p - 1)$) | 🟢 | [oeis-a046969](results/oeis-a046969/) |
 | 9 | OEIS A189286 (`conjecture_3`: $a(n)/8$ odd $\iff n = 2^k$) | Proved ($v_2(a(n)) = 3$ iff $n = 2^k$, else $\ge 4$) | ✅ | [oeis-a189286](results/oeis-a189286/) |
 | 10 | OEIS A238281 (`conjecture_2`: equal prime counts in adjacent intervals) | Disproved (counterexample at $n = 14, 286$) | 🟢 | [oeis-a238281](results/oeis-a238281/) |
+| 11 | OEIS A001481 (Lowell 2022: two distinct sums of two squares never add to $2^k$ except $0+2^k$) | Proved (2-adic descent mod 4) | ✅ | [oeis-a001481](results/oeis-a001481/) |
 
 ### Verification Legend
 - ✅ **Lean-verified**: Complete Lean 4 proof checked with zero `sorry` and only standard axioms (`propext`, `Classical.choice`, `Quot.sound`).
