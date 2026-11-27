@@ -84,6 +84,7 @@ theorem card_step (m : ℕ) : (S (m + 3)).card = 2 ^ m + (S (m + 1)).card := by
   rw [S_step, Finset.card_union_of_disjoint hd, Finset.card_image_of_injective _ i1,
     Finset.card_image_of_injective _ i2, Finset.card_range]
 
+open Classical in
 theorem card_small (m : ℕ) (hm : m ≤ 2) : (S m).card = 0 := by
   rw [Finset.card_eq_zero, S, Finset.filter_eq_empty_iff]
   intro x hx hP
