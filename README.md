@@ -15,6 +15,7 @@ Personal research lab for automated & AI-assisted mathematical conjecture explor
 | 7 | OEIS A238281 (`conjecture_2`: equal prime counts in adjacent intervals) | Disproved (counterexample at $n = 14, 286$) | 🟢 | [oeis-a238281](results/oeis-a238281/) |
 | 8 | OEIS A001481 (Lowell 2022: two distinct sums of two squares never add to $2^k$ except $0+2^k$) | Proved (2-adic descent mod 4) | ✅ | [oeis-a001481](results/oeis-a001481/) |
 | 9 | OEIS A004215 (Neumann 2020: #terms $< 2^n$ equals A023105$(n) - 2$) | Proved (shared recurrence $X(m+3) = 2^m + X(m+1)$) | 🟢 | [oeis-a004215](results/oeis-a004215/) |
+| 10 | OEIS A001227 (Pol 2017: $a(n) = A067742(n) + 2\,A131576(n) = A082647(n) + A131576(n)$) | Proved (odd divisors split at $d^2 = 2n$) | ✅ | [oeis-a001227](results/oeis-a001227/) |
 
 ### Verification Legend
 - ✅ **Lean-verified**: Complete Lean 4 proof checked with zero `sorry` and only standard axioms (`propext`, `Classical.choice`, `Quot.sound`).
