@@ -1,7 +1,4 @@
 import Mathlib.Tactic.Ring
-import ConjectureLab.EulerFifthPowers
-import ConjectureLab.ErdosStraus
-import ConjectureLab.BrocardProblem
 import ConjectureLab.OeisA100475
 import ConjectureLab.OeisA189409
 import ConjectureLab.OeisA092243
