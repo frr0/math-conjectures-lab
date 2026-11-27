@@ -6,17 +6,14 @@ Personal research lab for automated & AI-assisted mathematical conjecture explor
 
 | # | Conjecture | Outcome | Verification | Directory |
 | :--- | :--- | :--- | :---: | :--- |
-| 1 | Euler's sum of powers ($k=5$, calibration) | Disproved (1966 counterexample) | ✅ | [euler-fifth-powers](results/euler-fifth-powers/) |
-| 2 | Erdős–Straus conjecture (1948) | Partial ($n \not\equiv 1 \pmod 8$ proved; $n \le 10^5$ checked) | 🟡 | [erdos-straus](results/erdos-straus/) |
-| 3 | Brocard's problem (1876) | Partial (last-digit obstruction proved; $n \le 10^3$ checked) | 🟡 | [brocard-problem](results/brocard-problem/) |
-| 4 | OEIS A100475 (loop question) | Disproved (no positive start ever loops) | 🟢 | [oeis-a100475](results/oeis-a100475/) |
-| 5 | OEIS A189409 (`conjecture_1`: $\mathrm{primorial}(n)^2 + 1$ squarefree) | Disproved ($a(9) \equiv 0 \pmod{29^2}$) | ✅ | [oeis-a189409](results/oeis-a189409/) |
-| 6 | OEIS A092243 (`conjecture1`: prime-gap tug-of-war $> 0$ for $n > 250{,}000$) | Proved ($a(261{,}150) = 1 > 0$) | 🟢 | [oeis-a092243](results/oeis-a092243/) |
-| 7 | OEIS A108864 (last odd term with perfect deficiency $\le 10$) | Disproved ($m = 815{,}634{,}435$, $\mathrm{pd}(m) = 6$) | ✅ | [oeis-a108864](results/oeis-a108864/) |
-| 8 | OEIS A046969 (`conjecture1`: $a(p)/12$ prime for $p > 3$, $2p-1$ prime) | Proved ($a(p) = 12(2p - 1)$) | 🟢 | [oeis-a046969](results/oeis-a046969/) |
-| 9 | OEIS A189286 (`conjecture_3`: $a(n)/8$ odd $\iff n = 2^k$) | Proved ($v_2(a(n)) = 3$ iff $n = 2^k$, else $\ge 4$) | ✅ | [oeis-a189286](results/oeis-a189286/) |
-| 10 | OEIS A238281 (`conjecture_2`: equal prime counts in adjacent intervals) | Disproved (counterexample at $n = 14, 286$) | 🟢 | [oeis-a238281](results/oeis-a238281/) |
-| 11 | OEIS A001481 (Lowell 2022: two distinct sums of two squares never add to $2^k$ except $0+2^k$) | Proved (2-adic descent mod 4) | ✅ | [oeis-a001481](results/oeis-a001481/) |
+| 1 | OEIS A100475 (loop question) | Disproved (no positive start ever loops) | 🟢 | [oeis-a100475](results/oeis-a100475/) |
+| 2 | OEIS A189409 (`conjecture_1`: $\mathrm{primorial}(n)^2 + 1$ squarefree) | Disproved ($a(9) \equiv 0 \pmod{29^2}$) | ✅ | [oeis-a189409](results/oeis-a189409/) |
+| 3 | OEIS A092243 (`conjecture1`: prime-gap tug-of-war $> 0$ for $n > 250{,}000$) | Proved ($a(261{,}150) = 1 > 0$) | 🟢 | [oeis-a092243](results/oeis-a092243/) |
+| 4 | OEIS A108864 (last odd term with perfect deficiency $\le 10$) | Disproved ($m = 815{,}634{,}435$, $\mathrm{pd}(m) = 6$) | ✅ | [oeis-a108864](results/oeis-a108864/) |
+| 5 | OEIS A046969 (`conjecture1`: $a(p)/12$ prime for $p > 3$, $2p-1$ prime) | Proved ($a(p) = 12(2p - 1)$) | 🟢 | [oeis-a046969](results/oeis-a046969/) |
+| 6 | OEIS A189286 (`conjecture_3`: $a(n)/8$ odd $\iff n = 2^k$) | Proved ($v_2(a(n)) = 3$ iff $n = 2^k$, else $\ge 4$) | ✅ | [oeis-a189286](results/oeis-a189286/) |
+| 7 | OEIS A238281 (`conjecture_2`: equal prime counts in adjacent intervals) | Disproved (counterexample at $n = 14, 286$) | 🟢 | [oeis-a238281](results/oeis-a238281/) |
+| 8 | OEIS A001481 (Lowell 2022: two distinct sums of two squares never add to $2^k$ except $0+2^k$) | Proved (2-adic descent mod 4) | ✅ | [oeis-a001481](results/oeis-a001481/) |
 
 ### Verification Legend
 - ✅ **Lean-verified**: Complete Lean 4 proof checked with zero `sorry` and only standard axioms (`propext`, `Classical.choice`, `Quot.sound`).
