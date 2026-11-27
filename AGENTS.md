@@ -1,9 +1,8 @@
 # Research & Verification Protocol (`AGENTS.md`)
 
 ## 1. Branch Policy
-- **`main`** is the publication branch: only reviewed, verified results (proofs, counterexamples, or clearly labeled partial results) may be merged here via focused PRs.
-- **`research`** is the working branch for open investigations, scripts, drafts, and failed attempts.
-- Use short-lived branches (`exp/<slug>`) for new targets and open PRs targeting `research` (for work in progress) or `main` (once verified). Never blanket-merge `research` into `main`.
+- **`main`** is the publication branch and is protected by a ruleset: changes land only through PRs whose `python-checks` and `lean-checks` CI jobs pass. Only reviewed, verified results (proofs, counterexamples, or clearly labeled partial results) are merged.
+- Every target gets a short-lived branch (`exp/<slug>` for conjectures, `chore/<slug>`/`fix/<slug>` for pipeline work). Open investigations, scripts, drafts and failed attempts live there, in a **draft PR** if they need to be pushed before they are ready.
 
 ## 2. Mandatory Discovery Workflow
 Before claiming a conjecture is resolved, complete every gate in order:
@@ -20,7 +19,7 @@ Before claiming a conjecture is resolved, complete every gate in order:
 4. **Formal Verification (Lean 4)**
    - Every conjecture published to `main` **must** have a Lean 4 module under `lean/ConjectureLab/` imported in `lean/ConjectureLab.lean` (full theorem formalization for `✅`, or core structural lemmas / exact witness checks for `🟢` / `🟡`).
    - Never silently weaken hypotheses (*no spec gaming*) when claiming a full formalization (`✅`).
-   - No `sorry`, no custom `axiom`, and no untrusted native computation axioms. Allowed axioms: `propext`, `Classical.choice`, `Quot.sound`.
+   - No `sorry`, no custom `axiom`, and no untrusted native computation axioms (`native_decide`). Allowed axioms: `propext`, `Classical.choice`, `Quot.sound`. This is enforced in the kernel by `lean/AxiomAudit.lean`, which audits every declaration under `ConjectureLab.*` (so each module must use `namespace ConjectureLab.<Module>`).
    - Run `python3 scripts/check_repo.py` locally and `bash scripts/verify_lean.sh` (locally if `elan`/`lake` is installed, and always via the `lean-checks` GitHub Actions job before merging).
 
 ## 3. Honest Scope Labeling
@@ -28,7 +27,11 @@ Before claiming a conjecture is resolved, complete every gate in order:
 - Never mark a result `✅` in `README.md` unless `scripts/verify_lean.sh` passes cleanly on the exact target theorem.
 
 ## 4. Automated GitHub Pipeline
-1. Create a short-lived branch `exp/<slug>` from `main`.
-2. Open a tracking GitHub Issue for the conjecture or pipeline change.
-3. Open a focused PR from `exp/<slug>` targeting `main` and wait for both `python-checks` and `lean-checks` CI jobs to pass.
-4. Squash-merge the PR (`gh pr merge --squash --delete-branch`), close the Issue, pull `main`, and keep `research` synced with `main` (`0 ahead / 0 behind`).
+1. Create a short-lived branch `exp/<slug>` from an up-to-date `main`.
+2. Open a tracking GitHub Issue for the conjecture or pipeline change (check for duplicates first) and label it:
+   - conjectures: `open-target` + `claimed` when work starts (`needs-audit` while a proof/axiom audit is pending);
+   - pipeline/docs work: `enhancement` or `documentation`.
+3. Implement, run `python3 scripts/check_repo.py` (and `bash scripts/verify_lean.sh` if `lake` is installed), commit with Conventional Commits, push.
+4. Set the outcome labels on the Issue (`gh issue edit <n> --add-label ... --remove-label claimed,needs-audit`): exactly one of `proved` / `counterexample` / `partial-result`, plus `lean-verified` only for a full `✅` Lean formalization.
+5. Open a focused PR targeting `main` with `Closes #<issue>` in the body and the same labels (`gh pr create --label ...`), then enable auto-merge right away: `gh pr merge --auto --squash --delete-branch`. GitHub merges it once both CI jobs pass and closes the Issue; there is no need to poll CI.
+6. If a check fails, inspect it with `gh run view --log-failed`, fix and push to the same branch (auto-merge stays armed). Afterwards `git checkout main && git pull --prune`.
